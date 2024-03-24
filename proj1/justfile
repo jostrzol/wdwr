@@ -1,0 +1,2 @@
+build:
+  pandoc -f markdown+tex_math_dollars+pipe_tables -F mermaid-filter -o report.pdf report.md
