@@ -218,5 +218,117 @@ przepustowości równej $10 + 3 + 2 + 9 + 5 \cdot 3 = 39$. Wartość ta jest
 jednocześnie równa maksymalnemu przepływowi w sieci (nieograniczonemu
 zapotrzebowaniem ani produkcją towaru).
 
-Maksymalny przepływ $F < N$. Gdyby było inaczej, oznaczałoby to, że wybrane $N$
+Maksymalny przepływ $F < N$<!-- > -->. Gdyby było inaczej, oznaczałoby to, że wybrane $N$
 jest zbyt małe i trzeba powtórzyć obliczenia z większym $N$.
+
+## Zadanie 2
+
+### Zadanie 2.1
+
+Problem można rozwiązać przy pomocy zadania wyznaczania największego przepływu w
+sieci. Jeżeli $F_max$ będzie równe liczbie zespołów/projektów, to wartości
+przepływów będą wyrażały przypisanie zespołów do projektów.
+
+Poniżej sieć modelująca zadanie wraz z rozwiązaniem.
+
+```{.mermaid scale=2}
+flowchart LR
+    s((s))
+    t((t))
+    1((1))
+    2((2))
+    3((3))
+    4((4))
+    5((5))
+    6((6))
+    A((A))
+    B((B))
+    C((C))
+    D((D))
+    E((E))
+    F((F))
+
+    s -- [1/1] --> 1 & 2 & 3 & 4 & 5 & 6
+    A & B & C & D & E & F -- [1/1] --> t
+
+    1 -- [1/1] --> B
+    1 -- [0/1] --> D
+    1 -- [0/1] --> E
+    2 -- [0/1] --> B
+    2 -- [1/1] --> C
+    2 -- [0/1] --> E
+    3 -- [1/1] --> A
+    3 -- [0/1] --> D
+    3 -- [0/1] --> F
+    4 -- [0/1] --> A
+    4 -- [0/1] --> C
+    4 -- [1/1] --> F
+    5 -- [0/1] --> B
+    5 -- [1/1] --> E
+    5 -- [0/1] --> F
+    6 -- [0/1] --> A
+    6 -- [0/1] --> C
+    6 -- [1/1] --> D
+```
+
+$F_max = 6$, więc udało się przydzielić wszystkie zespoły do projektów.
+
+Przydział będzie wyglądał następująco:
+
+|   | A | B | C | D | E | F |
+|---|---|---|---|---|---|---|
+| 1 |   | X |   |   |   |   |
+| 2 |   |   | X |   |   |   |
+| 3 | X |   |   |   |   |   |
+| 4 |   |   |   |   |   | X |
+| 5 |   |   |   |   | X |   |
+| 6 |   |   |   | X |   |   |
+
+### Zadanie 2.2
+
+Zadanie podobne do poprzedniego z tą różnicą, że wykorzystane zostanie zadanie
+najtańszego przepływu, a do sieci trzeba będzie dopisać jednostkowe koszty
+przesyłu odpowiadające kosztom realizacji projektu przez zespół. Sieć i
+rozwiązanie znajduje się poniżej.
+
+```{.mermaid scale=2}
+flowchart LR
+    s((s))
+    t((t))
+    1((1))
+    2((2))
+    3((3))
+    4((4))
+    5((5))
+    6((6))
+    A((A))
+    B((B))
+    C((C))
+    D((D))
+    E((E))
+    F((F))
+
+    s -- [1/1] 0 --> 1 & 2 & 3 & 4 & 5 & 6
+    A & B & C & D & E & F -- [1/1] 0 --> t
+
+    1 -- [0/1] 13 --> B
+    1 -- [1/1] 15 --> D
+    1 -- [0/1] 18 --> E
+    2 -- [0/1] 4 --> B
+    2 -- [0/1] 2 --> C
+    2 -- [1/1] 3 --> E
+    3 -- [1/1] 2 --> A
+    3 -- [0/1] 10 --> D
+    3 -- [0/1] 13 --> F
+    4 -- [0/1] 10 --> A
+    4 -- [0/1] 5 --> C
+    4 -- [1/1] 15 --> F
+    5 -- [1/1] 10 --> B
+    5 -- [0/1] 17 --> E
+    5 -- [0/1] 12 --> F
+    6 -- [0/1] 20 --> A
+    6 -- [1/1] 6 --> C
+    6 -- [0/1] 16 --> D
+```
+
+Wtedy $F_{min} = 50$
