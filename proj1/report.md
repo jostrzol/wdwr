@@ -1,6 +1,7 @@
-# MOM projekt 1
-
-Autor: Jakub Ostrzołek
+---
+title:  'MOM projekt 1'
+author: Jakub Ostrzołek
+---
 
 ## Zadanie 1
 
