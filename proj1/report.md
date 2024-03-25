@@ -116,22 +116,22 @@ Parametry
 - $V_{kop} = \{A, B, C\}$ -- kopalnie
 - $V_{ele} = \{F, G, H\}$ -- elektrownie
 - $V_{poś} = \{D, E\}$ -- stacje pośrednie
-- $V_{wew} = V_{kop} \cup V_{ele} \cup V_{poś}$ -- węzły wewnętrzne sieci (bez startu i końca)
+- $V_{wew} = V_{kop} \cup V_{ele} \cup V_{poś}$ -- wewnętrzne węzły sieci (bez startu i końca)
 - $E_{wew} = \{(A, E), (B, E), ..., (E, G), (E, H)\}$ -- wewnętrzne krawędzie sieci
 - $E = E_{wew} \cup \{\forall i \in V_{kop} : (s, i)\} \cup \{\forall i \in V_{ele} : (i, t)\}$ -- wszystkie krawędzie sieci
-- $t^{wew}_{ij}$ dla $(i, j) \in E_{wew}$ -- przepustowość połączenia między węzłem $i$ a $j$ \[tys. ton\]
-- $c^{wew}_{ij}$ dla $(i, j) \in E_{wew}$ -- jednostkowy koszt przesłania towaru między węzłem $i$ a $j$ \[jednostka nieznana\]
-- $W_i$ dla $i \in V_{kop}$ -- zdolności wydobywcze kopalni $i$ \[tys. ton\]
-- $Z_i$ dla $i \in V_{ele}$ -- średnie dobowe zużycie węgla elektrowni $i$ \[tys. ton\]
+- $t^{wew}_{ij}$ dla $(i, j) \in E_{wew}$ -- przepustowość połączenia między węzłem $i$ a $j$ [tys. ton]
+- $c^{wew}_{ij}$ dla $(i, j) \in E_{wew}$ -- jednostkowy koszt przesłania towaru między węzłem $i$ a $j$ [jednostka nieznana]
+- $W_i$ dla $i \in V_{kop}$ -- zdolności wydobywcze kopalni $i$ [tys. ton]
+- $Z_i$ dla $i \in V_{ele}$ -- średnie dobowe zużycie węgla elektrowni $i$ [tys. ton]
 
 Zmienne decyzyjne
 
-- $f_{ij}$ -- przepływ między węzłem $i$ a $j$ \[tys. ton\]
+- $f_{ij}$ -- przepływ między węzłem $i$ a $j$ [tys. ton]
 
 Zmienne pomocnicze
 
-- $t_{ij}$ dla $(i, j) \in E$ -- przepustowość połączenia między węzłem $i$ a $j$ \[tys. ton\]
-- $c_{ij}$ dla $(i, j) \in E$ -- jednostkowy koszt przesłania towaru między węzłem $i$ a $j$ \[jednostka nieznana\]
+- $t_{ij}$ dla $(i, j) \in E$ -- przepustowość połączenia między węzłem $i$ a $j$ [tys. ton]
+- $c_{ij}$ dla $(i, j) \in E$ -- jednostkowy koszt przesłania towaru między węzłem $i$ a $j$ [jednostka nieznana]
 
 Funkcja celu
 
@@ -226,7 +226,7 @@ jest zbyt małe i trzeba powtórzyć obliczenia z większym $N$.
 ### Zadanie 2.1
 
 Problem można rozwiązać przy pomocy zadania wyznaczania największego przepływu w
-sieci. Jeżeli $F_max$ będzie równe liczbie zespołów/projektów, to wartości
+sieci. Jeżeli $F_{max}$ będzie równe liczbie zespołów/projektów, to wartości
 przepływów będą wyrażały przypisanie zespołów do projektów.
 
 Poniżej sieć modelująca zadanie wraz z rozwiązaniem.
@@ -271,7 +271,7 @@ flowchart LR
     6 -- [1/1] --> D
 ```
 
-$F_max = 6$, więc udało się przydzielić wszystkie zespoły do projektów.
+$F_{max} = 6$, więc udało się przydzielić wszystkie zespoły do projektów.
 
 Przydział będzie wyglądał następująco:
 
@@ -288,8 +288,9 @@ Przydział będzie wyglądał następująco:
 
 Zadanie podobne do poprzedniego z tą różnicą, że wykorzystane zostanie zadanie
 najtańszego przepływu, a do sieci trzeba będzie dopisać jednostkowe koszty
-przesyłu odpowiadające kosztom realizacji projektu przez zespół. Sieć i
-rozwiązanie znajduje się poniżej.
+przesyłu odpowiadające kosztom realizacji projektu przez zespół.
+
+Sieć i rozwiązanie znajduje się poniżej.
 
 ```{.mermaid scale=2}
 flowchart LR
@@ -331,4 +332,40 @@ flowchart LR
     6 -- [0/1] 16 --> D
 ```
 
-Wtedy $F_{min} = 50$
+Wtedy $F_{min} = 50$, a przydział wygląda następująco:
+
+|   | A | B | C | D | E | F |
+|---|---|---|---|---|---|---|
+| 1 |   |   |   | X |   |   |
+| 2 |   |   |   |   | X |   |
+| 3 | X |   |   |   |   |   |
+| 4 |   |   |   |   |   | X |
+| 5 |   | X |   |   | X |   |
+| 6 |   |   | X |   |   |   |
+
+### Zadanie 2.3
+
+Parametry
+
+- $Z = \{1, 2, 3, 4, 5, 6\}$ -- zespoły
+- $P = \{A, B, C, D, E, F\}$ -- projekty
+- $E = \{(1, B), (1, D), ..., (6, D)\}$ -- dozwolone pary (zespół, projekt)
+- $t_{ij}$ dla $(i, j) \in E$ -- czas realizacji projektu $j$ przez zespój $i$ [msc]
+
+Zmienne decyzyjne
+
+- $f_{ij} \in \{0, 1\}$ -- przypisanie zespołu $i$ do projektu $j$
+- $t_{max}$ -- maksymalny czas trwania pracy zespołu nad projektem [msc]
+
+Funkcja celu
+
+- $min \ t_{max}$ -- minimalizacja maksymalnego czasu
+
+Ograniczenia
+
+- $\forall i \in Z : \sum_{(i, j) \in E} f_{ij} = 1$ -- każdy zespół musi mieć
+    przypisany projekt
+- $\forall j \in P : \sum_{(i, j) \in E} f_{ij} = 1$ -- każdy projekt musi mieć
+    przypisany zespół
+- $\forall e \in E : t_{max} \ge f_{ij} \cdot t_{ij}$ -- maksymalny czas jest
+    większy lub równy od każdego z czasów pracy zespołu nad projektem
