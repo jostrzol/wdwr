@@ -111,7 +111,7 @@ $10 \cdot 2 + 5 \cdot 3 + 5 \cdot 8 + 15 \cdot 2 + 10 \cdot 3 + 3 \cdot 7 + 2 \c
 
 ### Zadanie programowania liniowego
 
-Parametry
+Zbiory
 
 - $V_{kop} = \{A, B, C\}$ -- kopalnie
 - $V_{ele} = \{F, G, H\}$ -- elektrownie
@@ -119,6 +119,9 @@ Parametry
 - $V_{wew} = V_{kop} \cup V_{ele} \cup V_{poś}$ -- wewnętrzne węzły sieci (bez startu i końca)
 - $E_{wew} = \{(A, E), (B, E), ..., (E, G), (E, H)\}$ -- wewnętrzne krawędzie sieci
 - $E = E_{wew} \cup \{\forall i \in V_{kop} : (s, i)\} \cup \{\forall i \in V_{ele} : (i, t)\}$ -- wszystkie krawędzie sieci
+
+Parametry
+
 - $t^{wew}_{ij}$ dla $(i, j) \in E_{wew}$ -- przepustowość połączenia między węzłem $i$ a $j$ [tys. ton]
 - $c^{wew}_{ij}$ dla $(i, j) \in E_{wew}$ -- jednostkowy koszt przesłania towaru między węzłem $i$ a $j$ [jednostka nieznana]
 - $W_i$ dla $i \in V_{kop}$ -- zdolności wydobywcze kopalni $i$ [tys. ton]
@@ -126,7 +129,7 @@ Parametry
 
 Zmienne decyzyjne
 
-- $f_{ij}$ -- przepływ między węzłem $i$ a $j$ [tys. ton]
+- $f_{ij}$ dla $(i, j) \in E$ -- przepływ między węzłem $i$ a $j$ [tys. ton]
 
 Zmienne pomocnicze
 
@@ -140,8 +143,8 @@ Funkcja celu
 
 Ograniczenia
 
-- $\forall (i,j) \in E : 0 \le f_{ij} \le t_{ij}$ -- ograniczenie przepustowości
-  na węzłach
+- $\forall (i,j) \in E : 0 \le f_{ij} \le t_{ij}$ -- ograniczenie przepływu od 0
+  do wartości przepustowości na krawędzi
 - $\forall j \in V_{wew} : \sum_{(i, j) \in E} = \sum_{(j, k) \in E}$ -- cały
   towar wchodzący do węzła wewnętrznego musi z niego wyjść
 - $\forall i \in V_{ele} : f_{it} = Z_i$ -- trzeba spełnić zapotrzebowanie
@@ -345,11 +348,14 @@ Wtedy $F_{min} = 50$, a przydział wygląda następująco:
 
 ### Zadanie 2.3
 
-Parametry
+Zbiory
 
 - $Z = \{1, 2, 3, 4, 5, 6\}$ -- zespoły
 - $P = \{A, B, C, D, E, F\}$ -- projekty
 - $E = \{(1, B), (1, D), ..., (6, D)\}$ -- dozwolone pary (zespół, projekt)
+
+Parametry
+
 - $t_{ij}$ dla $(i, j) \in E$ -- czas realizacji projektu $j$ przez zespój $i$ [msc]
 
 Zmienne decyzyjne
@@ -369,3 +375,43 @@ Ograniczenia
     przypisany zespół
 - $\forall e \in E : t_{max} \ge f_{ij} \cdot t_{ij}$ -- maksymalny czas jest
     większy lub równy od każdego z czasów pracy zespołu nad projektem
+
+### Zadanie 3
+
+Zbiory
+
+- $I = \{1, ..., n\}$ -- zasoby
+- $J = \{1, ..., m\}$ -- produkty
+
+Parametry
+
+- $c^{max}_i$ dla $i \in I$ -- przepustowości zasobów [jednostka nieznana]
+- $A_{ij}$ dla $(i, j) \in I \times J$ -- współczynnik jednostkowego zużycia
+    zasobu $i$ przez produkt $j$ [jednostka nieznana]
+- $p_j$ dla $j \in J$ -- standardowa cena produktu $j$ [jednostka nieznana]
+- $q_j$ dla $j \in J$ -- próg obniżenia przychodu jednostkowego produktu $j$
+    [jednostka nieznana]
+- $p^{disc}_j$ dla $j \in J$ -- obniżona cena produktu $j$ [jednostka nieznana]
+
+Zmienne
+
+- $x_j$ dla $j \in J$ -- produkcja produktu $j$ [jednostka nieznana]
+- $x'^+_j$, $x'^-_j$ dla $j \in J$ -- odpowiednio nadwyżka i niedobór względem
+    progu obniżenia przychodu jednostkowego produktu $j$ [jednostka niezana]
+
+Funkcja celu
+
+- $max \sum_{j \in J} p_j \cdot (x_j - x'^+_j) + p^{disc}_j \cdot x'^+_j$
+    -- maksymalizacja zysków
+
+Ograniczenia
+
+- $\forall i \in I : \sum_{j \in J} A_{ij} \cdot x_j \le c_j$ -- zużycie zasobów
+    mniejsze niż przepustowość
+- $\forall j \in J : x'^+_j - x'^-_j = q_j - x_j$ -- nadwyżka i niedobór
+    względem progu obniżenia przychodu jednostkowego produktu $j$
+- $\forall j \in J : x_j \ge 0$ -- produkcja większa lub równa 0
+- $\forall j \in J : x'^+_j \ge 0$ -- nadwyżka względem progu większa lub równa
+    0
+- $\forall j \in J : x'^-_j \ge 0$ -- niedobór względem progu większy lub równy
+    0
