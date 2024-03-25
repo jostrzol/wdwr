@@ -145,7 +145,7 @@ Ograniczenia
 
 - $\forall (i,j) \in E : 0 \le f_{ij} \le t_{ij}$ -- ograniczenie przepływu od 0
   do wartości przepustowości na krawędzi
-- $\forall j \in V_{wew} : \sum_{(i, j) \in E} = \sum_{(j, k) \in E}$ -- cały
+- $\forall j \in V_{wew} : \sum_{(i, j) \in E} f_{ij} = \sum_{(j, k) \in E} f_{jk}$ -- cały
   towar wchodzący do węzła wewnętrznego musi z niego wyjść
 - $\forall i \in V_{ele} : f_{it} = Z_i$ -- trzeba spełnić zapotrzebowanie
   kopalń
