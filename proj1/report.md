@@ -75,8 +75,8 @@ flowchart LR
     A -- [0/15] 4 --> D
     A -- [10/10] 2 --> E
     B -- [0/4] 4 --> D
-    B -- [5/9] 3 --> E
-    B -- [5/9] 8 --> G
+    B -- [1/9] 3 --> E
+    B -- [9/9] 8 --> G
     C -- [15/20] 2 --> D
     C -- [0/10] 6 --> E
     D -- [10/10] 3 --> F
@@ -84,7 +84,7 @@ flowchart LR
     D -- [2/2] 2 --> H
     E -- [0/20] 5 --> D
     E -- [5/5] 7 --> F
-    E -- [5/5] 6 --> G
+    E -- [1/5] 6 --> G
     E -- [5/5] 3 --> H
 
     F -- [15/15] 0 --> t 
@@ -107,7 +107,7 @@ tyś. ton):
 
 Co odpowiada łącznemu kosztowi:
 
-$10 \cdot 2 + 5 \cdot 3 + 5 \cdot 8 + 15 \cdot 2 + 10 \cdot 3 + 3 \cdot 7 + 2 \cdot 2 + 5 \cdot 7 + 5 \cdot 6 + 5 \cdot 3 = 240$
+$10 \cdot 2 + 1 \cdot 3 + 9 \cdot 8 + 15 \cdot 2 + 10 \cdot 3 + 3 \cdot 7 + 2 \cdot 2 + 5 \cdot 7 + 1 \cdot 6 + 5 \cdot 3 = 236$
 
 ### Zadanie programowania liniowego
 
