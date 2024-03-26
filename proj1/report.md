@@ -14,85 +14,12 @@ $F_{zad} = Z_F + Z_G + Z_H = 35$
 
 Struktura sieci dla tego problemu wygląda następująco.
 
-```{.mermaid scale=2}
-flowchart LR
-    s((s))
-    t((t))
-    A((A))
-    B((B))
-    C((C))
-    D((D))
-    E((E))
-    F((F))
-    G((G))
-    H((H))
-
-    s -- [10] 0 --> A 
-    s -- [13] 0 --> B
-    s -- [17] 0 --> C
-
-    A -- [15] 4 --> D
-    A -- [10] 2 --> E
-    B -- [4] 4 --> D
-    B -- [9] 3 --> E
-    B -- [9] 8 --> G
-    C -- [20] 2 --> D
-    C -- [10] 6 --> E
-    D -- [10] 3 --> F
-    D -- [3] 7 --> G
-    D -- [2] 2 --> H
-    E -- [20] 5 --> D
-    E -- [5] 7 --> F
-    E -- [5] 6 --> G
-    E -- [5] 3 --> H
-
-    F -- [15] 0 --> t 
-    G -- [13] 0 --> t
-    H -- [7] 0 --> t
-```
-
-_Oznaczenia na łukach: `[przepustowość] koszt_jednostkowy`._
+![Model sieci przepływowej (oznaczenia na łukach: `[przepustowość] koszt_jednostkowy`)](graphs/z1-1.drawio.svg)
 
 ### Rozwiązanie modelu sieci przepływowej
 
-```{.mermaid scale=2}
-flowchart LR
-    s((s))
-    t((t))
-    A((A))
-    B((B))
-    C((C))
-    D((D))
-    E((E))
-    F((F))
-    G((G))
-    H((H))
-
-    s -- [10/10] 0 --> A
-    s -- [10/13] 0 --> B
-    s -- [15/17] 0 --> C
-
-    A -- [0/15] 4 --> D
-    A -- [10/10] 2 --> E
-    B -- [0/4] 4 --> D
-    B -- [1/9] 3 --> E
-    B -- [9/9] 8 --> G
-    C -- [15/20] 2 --> D
-    C -- [0/10] 6 --> E
-    D -- [10/10] 3 --> F
-    D -- [3/3] 7 --> G
-    D -- [2/2] 2 --> H
-    E -- [0/20] 5 --> D
-    E -- [5/5] 7 --> F
-    E -- [1/5] 6 --> G
-    E -- [5/5] 3 --> H
-
-    F -- [15/15] 0 --> t 
-    G -- [13/13] 0 --> t
-    H -- [7/7] 0 --> t
-```
-
-_Oznaczenia na łukach: `[przepływ/przepustowość] koszt_jednostkowy`._
+![Model sieci przepływowej -- rozwiązanie (oznaczenia na łukach:
+`[przepływ/przepustowość] koszt_jednostkowy`)](graphs/z1-1-rozw.drawio.svg)
 
 A zatem plan wygląda następująco (planowany transport od wiersza do kolumny w
 tyś. ton):
@@ -178,44 +105,8 @@ Należy wprowadzić kilka modyfikacji do wcześniejszego grafu:
 
 Poniżej omawiana sieć dla $N = 100$ wraz z wyznaczonymi przepływami.
 
-```{.mermaid scale=2}
-flowchart LR
-    s((s))
-    t((t))
-    A((A))
-    B((B))
-    C((C))
-    D((D))
-    E((E))
-    F((F))
-    G((G))
-    H((H))
-
-    s -- [25/100] --> A 
-    s -- [14/100] --> B
-    s -- [0/100] --> C
-
-    A -- [15/15] --> D
-    A -- [10/10] --> E
-    B -- [0/4] --> D
-    B -- [5/9] --> E
-    B -- [9/9] --> G
-    C -- [0/20] --> D
-    C -- [0/10] --> E
-    D -- [10/10] --> F
-    D -- [3/3] --> G
-    D -- [2/2] --> H
-    E -- [0/20] --> D
-    E -- [5/5] --> F
-    E -- [5/5] --> G
-    E -- [5/5] --> H
-
-    F -- [15/100] --> t 
-    G -- [17/100] --> t
-    H -- [7/100] --> t
-```
-
-_Oznaczenia na łukach: `[przepływ/przepustowość]`._
+![Model sieci przepływowej, wąskie gardło (oznaczenia na łukach:
+`[przepływ/przepustowość]`)](graphs/z1-2.drawio.svg)
 
 A zatem $S = \{s, A, B, C, D, E\}$, $T = \{F, G, H\}$, czyli poszukiwany
 przekrój to $\{(D, F), (D, G), (D, H), (B, G), (E, F), (E, G), (E, H)\}$ o
@@ -236,47 +127,8 @@ przepływów będą wyrażały przypisanie zespołów do projektów.
 
 Poniżej sieć modelująca zadanie wraz z rozwiązaniem.
 
-```{.mermaid scale=2}
-flowchart LR
-    s((s))
-    t((t))
-    1((1))
-    2((2))
-    3((3))
-    4((4))
-    5((5))
-    6((6))
-    A((A))
-    B((B))
-    C((C))
-    D((D))
-    E((E))
-    F((F))
-
-    s -- [1/1] --> 1 & 2 & 3 & 4 & 5 & 6
-    A & B & C & D & E & F -- [1/1] --> t
-
-    1 -- [1/1] --> B
-    1 -- [0/1] --> D
-    1 -- [0/1] --> E
-    2 -- [0/1] --> B
-    2 -- [1/1] --> C
-    2 -- [0/1] --> E
-    3 -- [1/1] --> A
-    3 -- [0/1] --> D
-    3 -- [0/1] --> F
-    4 -- [0/1] --> A
-    4 -- [0/1] --> C
-    4 -- [1/1] --> F
-    5 -- [0/1] --> B
-    5 -- [1/1] --> E
-    5 -- [0/1] --> F
-    6 -- [0/1] --> A
-    6 -- [0/1] --> C
-    6 -- [1/1] --> D
-```
-
-_Oznaczenia na łukach: `[przepływ/przepustowość]`._
+![Model sieci przepływowej, dopasowanie zadań (oznaczenia na łukach:
+`[przepływ/przepustowość]`)](graphs/z2-1.drawio.svg)
 
 $F_{max} = 6$, więc udało się przydzielić wszystkie zespoły do projektów.
 
@@ -299,47 +151,8 @@ przesyłu odpowiadające kosztom realizacji projektu przez zespół.
 
 Sieć i rozwiązanie znajduje się poniżej.
 
-```{.mermaid scale=2}
-flowchart LR
-    s((s))
-    t((t))
-    1((1))
-    2((2))
-    3((3))
-    4((4))
-    5((5))
-    6((6))
-    A((A))
-    B((B))
-    C((C))
-    D((D))
-    E((E))
-    F((F))
-
-    s -- [1/1] 0 --> 1 & 2 & 3 & 4 & 5 & 6
-    A & B & C & D & E & F -- [1/1] 0 --> t
-
-    1 -- [0/1] 13 --> B
-    1 -- [1/1] 15 --> D
-    1 -- [0/1] 18 --> E
-    2 -- [0/1] 4 --> B
-    2 -- [0/1] 2 --> C
-    2 -- [1/1] 3 --> E
-    3 -- [1/1] 2 --> A
-    3 -- [0/1] 10 --> D
-    3 -- [0/1] 13 --> F
-    4 -- [0/1] 10 --> A
-    4 -- [0/1] 5 --> C
-    4 -- [1/1] 15 --> F
-    5 -- [1/1] 10 --> B
-    5 -- [0/1] 17 --> E
-    5 -- [0/1] 12 --> F
-    6 -- [0/1] 20 --> A
-    6 -- [1/1] 6 --> C
-    6 -- [0/1] 16 --> D
-```
-
-_Oznaczenia na łukach: `[przepływ/przepustowość] koszt_jednostkowy`._
+![Model sieci przepływowej, dopasowanie zadań z kosztem (oznaczenia na łukach:
+`[przepływ/przepustowość] koszt_jednostkowy`)](graphs/z2-2.drawio.svg)
 
 Wtedy $F_{min} = 50$, a przydział wygląda następująco:
 
