@@ -51,9 +51,9 @@ flowchart LR
     H -- [7] 0 --> t
 ```
 
-Oznaczenia na łukach: `[przepustowość] koszt_jednostkowy`.
+_Oznaczenia na łukach: `[przepustowość] koszt_jednostkowy`._
 
-### Rozwiązanie
+### Rozwiązanie modelu sieci przepływowej
 
 ```{.mermaid scale=2}
 flowchart LR
@@ -92,7 +92,7 @@ flowchart LR
     H -- [7/7] 0 --> t
 ```
 
-Oznaczenia na łukach: `[przepływ/przepustowość] koszt_jednostkowy`.
+_Oznaczenia na łukach: `[przepływ/przepustowość] koszt_jednostkowy`._
 
 A zatem plan wygląda następująco (planowany transport od wiersza do kolumny w
 tyś. ton):
@@ -215,6 +215,8 @@ flowchart LR
     H -- [7/100] --> t
 ```
 
+_Oznaczenia na łukach: `[przepływ/przepustowość]`._
+
 A zatem $S = \{s, A, B, C, D, E\}$, $T = \{F, G, H\}$, czyli poszukiwany
 przekrój to $\{(D, F), (D, G), (D, H), (B, G), (E, F), (E, G), (E, H)\}$ o
 przepustowości równej $10 + 3 + 2 + 9 + 5 \cdot 3 = 39$. Wartość ta jest
@@ -274,6 +276,8 @@ flowchart LR
     6 -- [1/1] --> D
 ```
 
+_Oznaczenia na łukach: `[przepływ/przepustowość]`._
+
 $F_{max} = 6$, więc udało się przydzielić wszystkie zespoły do projektów.
 
 Przydział będzie wyglądał następująco:
@@ -289,7 +293,7 @@ Przydział będzie wyglądał następująco:
 
 ### Zadanie 2.2
 
-Zadanie podobne do poprzedniego z tą różnicą, że wykorzystane zostanie zadanie
+Zadanie podobne do poprzedniego z tą różnicą, że wykorzystany zostanie problem
 najtańszego przepływu, a do sieci trzeba będzie dopisać jednostkowe koszty
 przesyłu odpowiadające kosztom realizacji projektu przez zespół.
 
@@ -335,6 +339,8 @@ flowchart LR
     6 -- [0/1] 16 --> D
 ```
 
+_Oznaczenia na łukach: `[przepływ/przepustowość] koszt_jednostkowy`._
+
 Wtedy $F_{min} = 50$, a przydział wygląda następująco:
 
 |   | A | B | C | D | E | F |
@@ -343,7 +349,7 @@ Wtedy $F_{min} = 50$, a przydział wygląda następująco:
 | 2 |   |   |   |   | X |   |
 | 3 | X |   |   |   |   |   |
 | 4 |   |   |   |   |   | X |
-| 5 |   | X |   |   | X |   |
+| 5 |   | X |   |   |   |   |
 | 6 |   |   | X |   |   |   |
 
 ### Zadanie 2.3
@@ -373,10 +379,23 @@ Ograniczenia
     przypisany projekt
 - $\forall j \in P : \sum_{(i, j) \in E} f_{ij} = 1$ -- każdy projekt musi mieć
     przypisany zespół
-- $\forall e \in E : t_{max} \ge f_{ij} \cdot t_{ij}$ -- maksymalny czas jest
-    większy lub równy od każdego z czasów pracy zespołu nad projektem
+- $\forall (i, j) \in E : t_{max} \ge f_{ij} \cdot t_{ij}$ -- maksymalny czas
+    jest większy lub równy od każdego z czasów pracy zespołu nad projektem
 
-### Zadanie 3
+#### Rozwiązanie zadania 2.3
+
+|   | A | B | C | D | E | F |
+|---|---|---|---|---|---|---|
+| 1 |   | X |   |   |   |   |
+| 2 |   |   |   |   | X |   |
+| 3 |   |   |   | X |   |   |
+| 4 | X |   |   |   |   |   |
+| 5 |   |   |   |   |   | X |
+| 6 |   |   | X |   |   |   |
+
+$$t_{max} = 13 \ [msc]$$
+
+## Zadanie 3
 
 Zbiory
 
