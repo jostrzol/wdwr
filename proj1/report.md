@@ -10,7 +10,7 @@ author: Jakub Ostrzołek
 Zadanie można przedstawić w postaci problemu wyznaczenia najtańszego przepływu o
 przepływie zadanym równym sumie zapotrzebowań klientów.
 
-$F_{zad} = Z_F + Z_G + Z_H = 35$
+$$F_{zad} = Z_F + Z_G + Z_H = 35$$
 
 Struktura sieci dla tego problemu wygląda następująco.
 
@@ -22,7 +22,7 @@ Struktura sieci dla tego problemu wygląda następująco.
 `[przepływ/przepustowość] koszt_jednostkowy`)](graphs/z1-1-rozw.drawio.svg)
 
 A zatem plan wygląda następująco (planowany transport od wiersza do kolumny w
-tyś. ton):
+tys. ton):
 
 |   | D | E | F | G | H |
 |---|---|---|---|---|---|
@@ -56,7 +56,7 @@ Parametry
 
 Zmienne decyzyjne
 
-- $f_{ij}$ dla $(i, j) \in E$ -- przepływ między węzłem $i$ a $j$ [tys. ton]
+- $f_{ij}$ dla $(i, j) \in E$ -- przepływ towaru między węzłem $i$ a $j$ [tys. ton]
 
 Zmienne pomocnicze
 
@@ -114,8 +114,9 @@ przepustowości równej $10 + 3 + 2 + 9 + 5 \cdot 3 = 39$. Wartość ta jest
 jednocześnie równa maksymalnemu przepływowi w sieci (nieograniczonemu
 zapotrzebowaniem ani produkcją towaru).
 
-Maksymalny przepływ $F < N$<!-- > -->. Gdyby było inaczej, oznaczałoby to, że wybrane $N$
-jest zbyt małe i trzeba powtórzyć obliczenia z większym $N$.
+Na każdym z węzłów $(s, *)$ i $(*, t)$ przepływ jest mniejszy niż $N$. Gdyby
+było inaczej, oznaczałoby to, że wybrane $N$ jest zbyt małe i trzeba powtórzyć
+obliczenia z większym $N$.
 
 ## Zadanie 2
 
@@ -154,7 +155,7 @@ Sieć i rozwiązanie znajduje się poniżej.
 ![Model sieci przepływowej, dopasowanie zadań z kosztem (oznaczenia na łukach:
 `[przepływ/przepustowość] koszt_jednostkowy`)](graphs/z2-2.drawio.svg)
 
-Wtedy $F_{min} = 50$, a przydział wygląda następująco:
+Wtedy całkowity koszt wynosi $50$, a przydział wygląda następująco:
 
 |   | A | B | C | D | E | F |
 |---|---|---|---|---|---|---|
@@ -235,6 +236,11 @@ Funkcja celu
 
 - $max \sum_{j \in J} p_j \cdot (x_j - x'^+_j) + p^{disc}_j \cdot x'^+_j$
     -- maksymalizacja zysków
+  - składnik $p_j \cdot (x_j - x'^+_j)$ -- odpowiada za cenę części towaru
+      poniżej progu obniżenia ceny produktu (dla $x_j > q_j$ będzie to funkcja
+      stała)
+  - składnik $p^{disc}_j \cdot x'^+_j$ -- odpowiada za cenę części towaru
+      powyżej progu obniżenia ceny produktu (dla $x_j < q_j$ będzie miał wartość 0)
 
 Ograniczenia
 
