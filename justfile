@@ -6,3 +6,6 @@ build:
     -F mermaid-filter \
     -o report.pdf \
     report.md
+
+watch:
+  watchexec -e md just build
