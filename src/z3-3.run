@@ -1,8 +1,0 @@
-reset;
-option solver cplex;
-model src/z3-3.mod;
-data src/z3-3.dat;
-solve;
-
-display production;
-display profit;
