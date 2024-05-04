@@ -18,7 +18,7 @@ param work_hours_in_month;
 var sale { p in Products, n in Months } >= 0, <= max_sale[p,n];
 var production { p in Products, n in Months } >= 0;
 var storage { p in Products, n in {0} union Months } >= 0;
-var storage_group_chosen { g in StorageGroups, n in Months } >= 0, <= 1;
+var storage_group_chosen { g in StorageGroups, n in Months } >= 0, <= 1;  # TODO: integer?
 
 s.t. machine_usage_time_limit { m in Machines, n in Months }:
   sum { (mm,p) in MachineCapabilities : mm = m } production[p,n] * unit_production_time[m,p]
@@ -28,7 +28,7 @@ s.t. initial_storage { p in Products }:
   storage[p,0] = initial_stored_products[p];
 
 s.t. one_storage_group_chosen_per_month { n in Months }:
-  sum { g in StorageGroups } storage_group_chosen[g,n] = 1;
+  sum { g in StorageGroups } storage_group_chosen[g,n] <= 1;
 
 s.t. products_stored_only_from_chosen_storage_group { n in Months, g in StorageGroups }:
   sum { (gg,p) in StorageGroupAssignments : gg = g } storage[p,n]

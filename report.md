@@ -32,6 +32,10 @@ Zbiory:
     pionowe, wiertarki poziome, frezarki, tokarki)
 * $MP = \{(SZ, P1), (WV, P1), (WH, P1), (FR, P1), (SZ, P2), ...\}$ -- maszyny
     wymagane do produkcji danego produktu
+* $G = \{G1, G2\}$ -- grupy produktów, z których tylko jedną można magazynować w
+    danym miesiącu
+* $GP = \{(G1, P1), (G1, P2), (G2, P3), (G2, P4)\}$ -- przypisania produktów do
+    grup
 * $N = \{1, 2, ..., m\}$ -- rozpatrywane miesiące ($m = 3$)
 
 Parametry:
@@ -46,9 +50,9 @@ Parametry:
 * $c^{mag} = 1$ -- cena magazynowania jednostki produktu przez miesiąc [zł/szt]
 * $m^{max} = 200$ -- maksymalna liczba zmagazynowanych jednostek danego produktu
     na miesiąc [szt]
-* $h^{rob} = 24 \cdot 8 \cdot 2 = 348$ -- liczba godzin roboczych w miesiącu [h]
 * $m^{start}_{p}$ -- liczba zmagazynowanych produktów $p$ na start (na koniec
     grudnia) [szt]
+* $h^{rob} = 24 \cdot 8 \cdot 2 = 348$ -- liczba godzin roboczych w miesiącu [h]
 
 Zmienne decyzyjne:
 
@@ -56,30 +60,38 @@ Zmienne decyzyjne:
 * $p_{pn}$ dla $p \in P, n \in N$ -- produkcja produktu $p$ w miesiącu $n$ [szt]
 * $m_{pn}$ dla $p \in P, n \in \{0, 1, ..., m\}$ -- liczba zmagazynowanych
     produktów $p$ na koniec miesiąca $m$ [szt]
+* $u_{gn}$ dla $g \in G, n \in N$ -- czy dana grupa produktów jest magazynowana
+    w danym miesiącu (0 -- nie, 1 -- tak)
 
 Ograniczenia:
 
 * $\forall p \in P, n \in N : x_{pn} \ge 0$ -- sprzedaż nieujemna
 * $\forall p \in P, n \in N : p_{pn} \ge 0$ -- produkcja nieujemna
 * $\forall p \in P, n \in N : m_{pn} \ge 0$ -- stan magazynu nieujemny
+* $\forall g \in G, n \in N : u_{gn} \in \{0, 1\}$ -- zmienna binarna
 * $\forall m \in M, n \in N : \sum_{\{p \: : \: (m, p) \in MP\}} p_{pn} \cdot t_{mp} \le h^{rob} \cdot n_m$
     -- łączny czas użycia maszyny $m$ w miesiącu $n$ nie przekracza liczby roboczych godzin
 * $\forall p \in P, n \in N : x_{pn} \le x^{max}_{pn}$ -- sprzedaż produktu $p$
     nie przekracza rynkowego limitu na miesiąc $n$
 * $\forall p \in P : m_{p0} = m^{start}_{p}$ -- początkowy stan magazynu dla
     produktu $p$
-* $\forall p \in P, n \in N : m_{pn} \le m^{max}$ -- stan magazynu dla produktu
-    $p$ nie przekracza limitu na każdy produkt w miesiącu $n$
+* $\forall n \in N : sum_{g \in G} u_{gn} \le 1$ -- w miesiącu $n$ może być
+    wybrana maksymalnie jedna grupa produktów $g$ do magazynowania
+* $\forall g \in G, n \in N : \sum\{p : (g, p) \in GP\} m_{pn} \le m^{max} \cdot u_{gn}$
+    -- produkt $p$ należący do grupy $g$ może być magazynowany maksymalnie w
+    liczbie $c^{max}$ szt, jeśli grupa $g$ jest wybrana do magazynowania, lub w
+    liczbie 0 szt w przeciwnym wypadku
 * $\forall n \in N : (m_{P1n} + m_{P2n}) \cdot (m_{P3n} + m_{P4n}) = 0$
     -- w miesiącu $n$ nie są składowane jednocześnie produkty z grupy $(P1, P2)$
     i $(P3, P4)$
-* $\forall n \in N : \sum_{p \in P} p_{pn} + m_{p(n-1)} = \sum_{p \in P} x_{pn} + m_{pn}$
-    -- dla każdego miesiąca $n$ produkty wyprodukowane i pozostałe w magazynach
-    muszą zostać sprzedane lub zmagazynowane
+* $\forall p \in P, n \in N : p_{pn} + m_{p(n-1)} = x_{pn} + m_{pn}$
+    -- dla każdego miesiąca $n$ i produktu $p$ sztuki wyprodukowane i pozostałe
+    w magazynach z poprzedniego miesiąca muszą zostać sprzedane lub
+    zmagazynowane
 
 Cel:
 
-* $max \ \sum_{n \in N}(\sum_{p \in P} (x_{pn} \cdot R_p - m_{pn} \cdot c^{mag}))$
+* $max \ \sum_{n \in N} \sum_{p \in P} (x_{pn} \cdot R_p - m_{pn} \cdot c^{mag})$
     -- maksymalizacja łącznego zysku, czyli różnicy dochodu ze sprzedaży
     produktów i wydatków na magazynowanie produktów na przestrzeni rozpatrywanych
     miesięcy (koszty magazynowania na miesiąc grudzień pominięte)
