@@ -13,5 +13,5 @@ display { n in Months, m in Machines } (
   work_hours_in_month * machine_count[m]
 );
 display { n in Months, p in Products } (production[p,n], sale[p,n], storage[p,n]);
-display profit, risk;
+display profit, {s in Scenarios} abs(risk[s]);
 display average_profit, risk_total;

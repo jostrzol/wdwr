@@ -1,16 +1,18 @@
 reset;
 option solver cplex;
+option reset_initial_guesses 1;
+option cplex_options 'outlev=0';
+option solver_msg 0;
 model src/z2.mod;
 data src/z2.dat;
-option reset_initial_guesses 1;
 
-set in_risks_max := {0 .. 840 by 10};
+set in_risks_max := {0 .. 840 by 20};
 var out_risks{in_risks_max};
 var out_average_profits{in_risks_max};
 
 for {m in in_risks_max} {
 	let risk_max := m;
-	solve;
+	solve >/dev/null;
 	let out_risks[m] := risk_total;
 	let out_average_profits[m] := average_profit;
 }
