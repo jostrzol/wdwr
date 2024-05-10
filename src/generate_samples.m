@@ -12,4 +12,4 @@ samples = samples + mu;
 
 means = mean(samples, 2)
 
-writematrix(samples, "samples.csv");
+writematrix(samples.', "samples.csv");
