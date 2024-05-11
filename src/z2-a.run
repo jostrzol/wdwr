@@ -6,15 +6,15 @@ option solver_msg 0;
 model src/z2.mod;
 data src/z2.dat;
 
-set in_risks_max := {0 .. 840 by 20};
-var out_risks{in_risks_max};
-var out_average_profits{in_risks_max};
+set in_risks_max := {0 .. 42 by 1};
+var out_risk{in_risks_max};
+var out_average_profit{in_risks_max};
 
 for {m in in_risks_max} {
 	let risk_max := m;
 	solve >/dev/null;
-	let out_risks[m] := risk_total;
-	let out_average_profits[m] := average_profit;
+	let out_risk[m] := risk_total;
+	let out_average_profit[m] := average_profit;
 }
 
-display out_risks, out_average_profits;
+display out_risk, out_average_profit;

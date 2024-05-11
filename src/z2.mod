@@ -25,7 +25,7 @@ var storage_group_chosen {g in StorageGroups, n in Months} >= 0, <= 1;  # TODO: 
 var risk_plus {Scenarios} >= 0;
 var risk_minus {Scenarios} >= 0;
 var risk {s in Scenarios} = risk_plus[s] - risk_minus[s];
-var risk_total = sum {s in Scenarios} (risk_plus[s] + risk_minus[s]);
+var risk_total = sum {s in Scenarios} (risk_plus[s] + risk_minus[s]) / n_scenarios;
 
 var profit {s in Scenarios} =
   sum {p in Products, n in Months} (
