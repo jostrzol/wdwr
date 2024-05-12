@@ -96,7 +96,7 @@ Zmienne decyzyjne:
 * $m_{pn} \quad p \in P, n \in (\{0\} \cup N)$ -- liczba zmagazynowanych
     produktów $p$ na koniec miesiąca $n$ [szt]
 * $u_{gn} \quad g \in G, n \in N$ -- czy grupa produktów $g$ jest magazynowana
-    w miesiącu $m$ (zmienna binarna: 0 -- nie, 1 -- tak)
+    w miesiącu $n$ (zmienna binarna: 0 -- nie, 1 -- tak)
 
 Ograniczenia:
 
@@ -127,3 +127,60 @@ Cel:
     -- maksymalizacja łącznego zysku, czyli różnicy dochodu ze sprzedaży
     produktów i wydatków na magazynowanie produktów na przestrzeni rozpatrywanych
     miesięcy (koszty magazynowania na miesiąc grudzień pominięte)
+
+### Wyniki działania modelu
+
+Powyższy model został zaimplementowany w języku AMPL i uruchomiony przy użyciu solvera CPLEX. Poniżej wyniki działania.
+
+Wartość funkcji celu:
+
+$$\sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot R_p - m_{pn} \cdot c^{mag}) = 14531 \ [zł]$$
+
+* $x_{pn}, p_{pn}, m_{pn} \quad p \in P, n \in N$ -- liczba sprzedanych,
+  wyprodukowanych i zmagazynowanych produktów $p$ w miesiącu $n$ [szt]
+
+  * $n = 1$ (styczeń)
+
+    | $p$ | $x_{p1}$ | $p_{p1}$ | $m_{p1}$ |
+    |-----|----------|----------|----------|
+    | P1  |      200 |      200 |        0 |
+    | P2  |        0 |        0 |        0 |
+    | P3  |       50 |      100 |        0 |
+    | P4  |      150 |      200 |        0 |
+
+  * $n = 2$ (luty)
+
+    | $p$ | $x_{p2}$ | $p_{p2}$ | $m_{p2}$ |
+    |-----|----------|----------|----------|
+    | P1  |      300 |      300 |        0 |
+    | P2  |      100 |      100 |        0 |
+    | P3  |      200 |      200 |        0 |
+    | P4  |      200 |      200 |        0 |
+
+  * $n = 3$ (marzec)
+
+    | $p$ | $x_{p3}$ | $p_{p3}$ | $m_{p3}$ |
+    |-----|----------|----------|----------|
+    | P1  |        0 |        0 |        0 |
+    | P2  |      300 |      300 |        0 |
+    | P3  |      100 |      100 |        0 |
+    | P4  |      200 |      200 |        0 |
+
+* $u_{gn} \quad g \in G, n \in N$ -- czy grupa produktów $g$ jest magazynowana
+    w miesiącu $n$ (zmienna binarna: 0 -- nie, 1 -- tak)
+
+  | $g$ \\ $n$ | 1 | 2 | 3 |
+  |------------|---|---|---|
+  | G1         | 0 | 0 | 0 |
+  | G2         | 1 | 1 | 1 |
+
+### Wnioski z wyników
+
+* Ograniczenia na maksymalny obrót produktem zostały w całości wykorzystane.
+* Żadne z ograniczeń na maksymalny czas użycia maszyn nie miało znaczenia,
+  rzeczywiste wykorzystanie maszyn było zawsze dużo mniejsze niż limit.
+* Z poprzedniego punktu wynika, że magazynowanie było zbędne (nie licząc stanu
+  magazynu na koniec grudnia). Sama produkcja wysyciła limit na obrót każdym z
+  produktów, więc nie było sensu dopłacać za magazynowanie produktów.
+* Koszty produkcji są zerowe (brak magazynowania; koszty materiałów nie są
+  rozważane w zadaniu).
