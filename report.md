@@ -299,3 +299,108 @@ w pliku `src/generate_samples.m`, a wynik jego działania jest w
 Próbki należało również przekształcić do formatu `.dat` w celu odczytania przez
 AMPL, dlatego napisałem też skrypt `src/csv_to_dat_param.py`, który na podstawie
 pliku `.csv` generowanego z _MatLaba_ tworzy plik `out/z2-samples.dat`.
+
+### Wyniki działania modelu
+
+Powyższy model został zaimplementowany w języku AMPL i uruchomiony przy użyciu
+solwera CPLEX. Implementacja znajduje się w plikach: `src/z2.{dat,mod,run}`.
+Dodatkowo pliki `src/z2-a.run` i `src/z2-c.run` uruchamiają model dla kilku
+wartości aspiracji $a_r$ na potrzeby podpunktów _a_ i _c_.
+
+Nastawy parametrów metody punktu referencyjnego są dla każdego uruchomienia stałe z wyjątkiem $a_r$ i równe:
+
+* $\rho = 0.000001$ -- wyznaczony eksperymentalnie tak, by drugie kryterium nie
+  zakłócało działania pierwszego
+* $\lambda_r = 1000$, $\lambda_z = 0.001$ -- większy poziom istotności dla miary
+  ryzyka zapewnia, że ustawiona wartość aspiracji odchylenia przeciętnego będzie
+  bardzo blisko faktycznej wartości odchylenia przeciętnego dla rozwiązania
+* $a_z = -500$ -- wartość poniżej najgorszej z możliwych (dla $r^{śr} = 0$:
+  $z^{śr} = -300$); dzięki temu model będzie w pierwszej kolejności próbował
+  zrealizować aspirację dla ryzyka
+
+#### Zbiór rozwiązań efektywnych
+
+W celu wyznaczenia zbioru rozwiązań efektywnych w przestrzeni ryzyko-zysk,
+uruchomiłem model dla różnych wartości aspiracji $a_r$. Wyniki dla $a_r \ge 820$
+zaczynają się powtarzać, co oznacza że w tym przypadku średni zysk osiągnął już
+swoją maksymalną wartość.
+
+| $a_r$ | $r^{śr}$ | $z^{śr}$  |
+|-------|----------|-----------|
+| 0     |   0      |  -300     |
+| 20    |  19.999  |   529.344 |
+| 40    |  39.9983 |  1208.7   |
+| 60    |  59.9976 |  1888.06  |
+| 80    |  79.9969 |  2567.41  |
+| 100   |  99.9963 |  3246.77  |
+| ...   | ...      | ...       |
+| 740   | 739.986  | 13674.1   |
+| 760   | 759.986  | 13830.2   |
+| 780   | 779.986  | 13986.2   |
+| 800   | 799.985  | 14142.2   |
+| 820   | 816.903  | 14274.2   |
+| 840   | 816.903  | 14274.2   |
+
+Następnie otrzymane wyniki naniosłem na wykres. Na wykresie odwróciłem oś OX, bo ryzyko jest minimalizowane.
+
+![Zbiór rozwiązań efektywnych zadania w przestrzeni ryzyko-zysk](./out/z2-a-plot.png)
+
+Widać, że żadne z widocznych rozwiązań nie dominuje żadnego innego, co sugeruje, że zadanie się udało.
+
+#### Rozwiązanie maksymalnego zysku
+
+znajduje się na wykresie na lewym krańcu zbioru. Posiada ono wartość średniego
+zysku $z^{śr} = 14274.4$ zbliżoną do wyniku z pierwszego zadania, co sugeruje
+poprawność wykonania obu zadań. Wtedy ryzyko wynosi ok. $r^{śr} = 816.9$.
+
+#### Rozwiązanie minimalnego ryzyka
+
+znajduje się na wykresie na prawym krańcu zbioru. Posiada ono ujemną wartość
+średniego zysku $z^{śr} = -300$ przy zerowym ryzyku. Oznacza to, że dla każdego
+ze scenariuszy zysk wynosi $-300$ zł. Takie rozwiązane, o ile efektywne w
+zadanym problemie wielokryterialnym, jest oczywiście całkowicie niedopuszczalne
+dla każdego rozsądnego decydenta i zdominowane w sensie FSD przez wiele innych
+rozwiązań. Prawdopodobnie w wyznaczonym zbiorze istnieje więcej takich
+problematycznych rozwiązań.
+
+#### Analiza dominacji FSD
+
+została przeprowadzona dla 3 rozwiązań. Ich punkty aspiracji ryzyka to: $100$,
+$400$ i $740$. Rozwiązania oznaczę odpowiednio $R1$, $R2$ i $R3$. Dzięki
+analizie FSD można sprawdzić, czy któreś z nich jest zdominowane przez inne.
+
+Poniżej tabela posortowanych niemalejąco ocen dla wybranych rozwiązań.
+
+| $R1$    | $R2$    | $R3$    |
+|---------|---------|---------|
+| 3049.11 | 9011.18 | 12380.8 |
+| 3079.62 | 9091.47 | 12410.4 |
+| 3106.42 | 9189.33 | 12738.9 |
+| 3123.18 | 9215.99 | 12798.3 |
+| 3149.31 | 9417.94 | 12830.1 |
+| 3151.1  | 9485.39 | 12918.8 |
+| 3178.67 | 9489.04 | 12987.6 |
+| 3186.79 | 9535.02 | 13348.5 |
+| 3216.31 | 9567.75 | 13498.9 |
+| 3227.2  | 9630.19 | 13519.5 |
+| 3246.77 | 9763.32 | 13583.6 |
+| 3246.77 | 9763.32 | 13895.0 |
+| 3246.77 | 9815.82 | 14056.7 |
+| 3249.58 | 9998.72 | 14104.1 |
+| 3261.01 | 10000.3 | 14105.5 |
+| 3302.55 | 10154.7 | 14255.4 |
+| 3346.59 | 10202.7 | 14461.4 |
+| 3418.84 | 10216.9 | 14669.9 |
+| 3476.56 | 10478.4 | 14718.3 |
+| 3672.19 | 11238.8 | 16200.6 |
+
+Już tutaj widać, że $R1 \prec_a R2 \prec_a R3$. Ponieważ zadanie jest
+sprowadzalne do problemu wyboru jednakowo prawdopodobnych loterii, to można
+wywnioskować, że również $R1 \prec_{FSD} R2 \prec_{FSD} R3$, jednak poniższy
+wykres dystrybuanty zysków pokazuje to lepiej.
+
+![Dystrybuanta zysków wybranych rozwiązań efektywnych zadania](./out/z2-c-plot.png)
+
+Dystrybuanta również jednoznacznie pokazuje, że $R1 \prec_{FSD} R2 \prec_{FSD}
+R3$. Aby otrzymywać jedynie rozwiązania FSD-efektywne, należałoby zmienić
+podejście generacji rozwiązań.
