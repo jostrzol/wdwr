@@ -116,9 +116,6 @@ Ograniczenia:
     -- produkt $p$ należący do grupy $g$ może być magazynowany maksymalnie w
     liczbie $c^{max}$ szt, jeśli grupa $g$ jest wybrana do magazynowania, lub w
     liczbie 0 szt w przeciwnym wypadku
-* $(m_{P1n} + m_{P2n}) \cdot (m_{P3n} + m_{P4n}) = 0 \quad \forall n \in N$
-    -- w miesiącu $n$ nie są składowane jednocześnie produkty z grupy $(P1, P2)$
-    i $(P3, P4)$
 * $p_{pn} + m_{p(n-1)} = x_{pn} + m_{pn} \quad \forall p \in P, n \in N$
     -- dla każdego miesiąca $n$ i produktu $p$ sztuki wyprodukowane i pozostałe
     w magazynach z poprzedniego miesiąca muszą zostać sprzedane lub
