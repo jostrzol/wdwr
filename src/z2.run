@@ -2,6 +2,7 @@ reset;
 option solver cplex;
 model src/z2.mod;
 data src/z2.dat;
+data out/z2-samples.dat;
 
 let risk_max := 100;
 

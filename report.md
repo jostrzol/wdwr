@@ -184,3 +184,5 @@ $$\sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot R_p - m_{pn} \cdot c
   produktów, więc nie było sensu dopłacać za magazynowanie produktów.
 * Koszty produkcji są zerowe (brak magazynowania; koszty materiałów nie są
   rozważane w zadaniu).
+
+## Zadanie 2

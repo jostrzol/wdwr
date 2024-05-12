@@ -67,6 +67,28 @@ def _try_convert(array: np.ndarray) -> np.ndarray:
     return array
 
 
+def df_write_dat(
+    df: pd.DataFrame,
+    output: TextIO,
+    name: str,
+    columns: list,
+    index_pos: int = 1,
+):
+    output.write(f"param {name} :=\n")
+
+    for key, row in df.iterrows():
+        template = ["*", "*"]
+        template[index_pos] = str(key)
+        output.write(f"  [{','.join(template)}] ")
+
+        for column, value in zip(columns, row):
+            output.write(f"{column} {value}, ")
+
+        output.write("\n")
+
+    output.write(";\n")
+
+
 if __name__ == "__main__":
     text = """
 set in_risks_max := 5 20 37;

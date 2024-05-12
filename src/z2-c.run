@@ -5,6 +5,7 @@ option cplex_options 'outlev=0';
 option solver_msg 0;
 model src/z2.mod;
 data src/z2.dat;
+data out/z2-samples.dat;
 
 set in_risks_max := {5, 20, 37};
 
