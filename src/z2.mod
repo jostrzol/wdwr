@@ -2,14 +2,13 @@ set Products;
 set StorageGroups;
 set StorageGroupAssignments within {StorageGroups, Products};
 set Machines;
-set MachineCapabilities within {Machines, Products};
 param n_months;
 set Months = {1..n_months};
 param n_scenarios;
 set Scenarios = {1..n_scenarios};
 
 param machine_count {Machines};
-param unit_production_time {MachineCapabilities};
+param unit_production_time {Machines, Products} default 0;
 param revenue {Products, Scenarios};
 param max_sale {Products, Months};
 param storage_unit_cost_per_month;
@@ -34,7 +33,7 @@ var profit {s in Scenarios} =
 var average_profit = sum{s in Scenarios} profit[s] / n_scenarios;
 
 s.t. machine_usage_time_limit {m in Machines, n in Months}:
-  sum {(mm,p) in MachineCapabilities : mm = m} production[p,n] * unit_production_time[m,p]
+  sum {p in Products} production[p,n] * unit_production_time[m,p]
   <= work_hours_in_month * machine_count[m];
 
 s.t. initial_storage {p in Products}:

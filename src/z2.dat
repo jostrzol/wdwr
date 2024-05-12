@@ -5,12 +5,6 @@ set StorageGroupAssignments :=
   (G2,*) P3, P4,
 ;
 set Machines := SZ, WV, WH, FR, TO;
-set MachineCapabilities :=
-  (*,P1) SZ, WV, WH, FR,
-  (*,P2) SZ, WV, FR, TO,
-  (*,P3) WH, TO,
-  (*,P4) WV, FR,
-;
 param n_months := 3;
 
 param machine_count :=

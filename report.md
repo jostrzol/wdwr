@@ -65,8 +65,6 @@ Zbiory:
 * $P = \{P1, P2, P3, P4\}$ -- produkty
 * $M = \{SZ, WV, WH, FR, TO\}$ -- maszyny (odpowiednio: szlifierki, wiertarki
     pionowe, wiertarki poziome, frezarki, tokarki)
-* $MP = \{(SZ, P1), (WV, P1), (WH, P1), (FR, P1), (SZ, P2), ...\}$ -- maszyny
-    wymagane do produkcji danego produktu
 * $G = \{G1, G2\}$ -- grupy produktów, z których tylko jedną można magazynować w
     danym miesiącu
 * $GP = \{(G1, P1), (G1, P2), (G2, P3), (G2, P4)\}$ -- przypisania produktów do
@@ -76,9 +74,9 @@ Zbiory:
 Parametry:
 
 * $n_m \quad m \in M$ -- liczba dostępnych maszyn $m$ [brak jednostki]
-* $t_{mp} \quad (m, p) \in MP$ -- jednostkowy czas produkcji produktu $p$ na
+* $t_{mp} \quad m \in M, p \in P$ -- jednostkowy czas produkcji produktu $p$ na
     maszynie $m$ [h/szt]
-* $R_p \quad p \in P$ -- średni jednostkowy dochód za produkt $p$ [zł/szt]
+* $\mathbb{E}(R_p) \quad p \in P$ -- średni jednostkowy dochód za produkt $p$ [zł/szt]
     (wartości obliczone [powyżej](#wyznaczanie-średnich-jednostkowych-dochodów-dla-każdego-z-produktów))
 * $x^{max}_{pn} \quad p \in P, n \in N$ -- maksymalna sprzedaż produktu $p$ w
     miesiącu $n$ [szt]
@@ -104,7 +102,7 @@ Ograniczenia:
 * $p_{pn} \ge 0 \quad \forall p \in P, n \in N$ -- produkcja nieujemna
 * $m_{pn} \ge 0 \quad \forall p \in P, n \in N$ -- stan magazynu nieujemny
 * $u_{gn} \in \{0, 1\} \quad \forall g \in G, n \in N$ -- zmienna binarna
-* $\sum\limits_{\{p \: : \: (m, p) \in MP\}} p_{pn} \cdot t_{mp} \le h^{rob} \cdot n_m \quad \forall m \in M, n \in N$
+* $\sum\limits_{p  \in P} p_{pn} \cdot t_{mp} \le h^{rob} \cdot n_m \quad \forall m \in M, n \in N$
     -- łączny czas użycia maszyny $m$ w miesiącu $n$ nie przekracza liczby roboczych godzin
 * $x_{pn} \le x^{max}_{pn} \quad \forall p \in P, n \in N$ -- sprzedaż produktu $p$
     nie przekracza rynkowego limitu na miesiąc $n$
@@ -119,11 +117,11 @@ Ograniczenia:
 * $p_{pn} + m_{p(n-1)} = x_{pn} + m_{pn} \quad \forall p \in P, n \in N$
     -- dla każdego miesiąca $n$ i produktu $p$ sztuki wyprodukowane i pozostałe
     w magazynach z poprzedniego miesiąca muszą zostać sprzedane lub
-    zmagazynowane
+    powtórnie zmagazynowane
 
 Cel:
 
-* $max \ \sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot R_p - m_{pn} \cdot c^{mag})$
+* $max \ \sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot \mathbb{E}(R_p) - m_{pn} \cdot c^{mag})$
     -- maksymalizacja łącznego zysku, czyli różnicy dochodu ze sprzedaży
     produktów i wydatków na magazynowanie produktów na przestrzeni rozpatrywanych
     miesięcy (koszty magazynowania na miesiąc grudzień pominięte)
@@ -134,7 +132,7 @@ Powyższy model został zaimplementowany w języku AMPL i uruchomiony przy użyc
 
 Wartość funkcji celu:
 
-$$\sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot R_p - m_{pn} \cdot c^{mag}) = 14531 \ [zł]$$
+$$\sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot \mathbb{E}(R_p) - m_{pn} \cdot c^{mag}) = 14531 \ [zł]$$
 
 * $x_{pn}, p_{pn}, m_{pn} \quad p \in P, n \in N$ -- liczba sprzedanych,
   wyprodukowanych i zmagazynowanych produktów $p$ w miesiącu $n$ [szt]

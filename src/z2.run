@@ -10,7 +10,7 @@ solve;
 
 display { n in Months, g in StorageGroups } storage_group_chosen[g,n];
 display { n in Months, m in Machines } (
-  sum { (mm, p) in MachineCapabilities : mm = m } production[p,n] * unit_production_time[m,p],
+  sum { p in Products } production[p,n] * unit_production_time[m,p],
   work_hours_in_month * machine_count[m]
 );
 display { n in Months, p in Products } (production[p,n], sale[p,n], storage[p,n]);

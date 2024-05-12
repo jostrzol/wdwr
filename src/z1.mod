@@ -2,12 +2,11 @@ set Products;
 set StorageGroups;
 set StorageGroupAssignments within { StorageGroups, Products };
 set Machines;
-set MachineCapabilities within { Machines, Products };
 param n_months;
 set Months = { 1..n_months };
 
 param machine_count { Machines };
-param unit_production_time { MachineCapabilities };
+param unit_production_time { Machines, Products } default 0;
 param average_revenue { Products };
 param max_sale { Products, Months };
 param storage_unit_cost_per_month;
@@ -18,10 +17,10 @@ param work_hours_in_month;
 var sale { p in Products, n in Months } >= 0, <= max_sale[p,n];
 var production { p in Products, n in Months } >= 0;
 var storage { p in Products, n in {0} union Months } >= 0;
-var storage_group_chosen { g in StorageGroups, n in Months } >= 0, <= 1;  # TODO: integer?
+var storage_group_chosen { g in StorageGroups, n in Months } binary;
 
 s.t. machine_usage_time_limit { m in Machines, n in Months }:
-  sum { (mm,p) in MachineCapabilities : mm = m } production[p,n] * unit_production_time[m,p]
+  sum { p in Products } production[p,n] * unit_production_time[m,p]
   <= work_hours_in_month * machine_count[m];
 
 s.t. initial_storage { p in Products }:
