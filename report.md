@@ -121,14 +121,16 @@ Ograniczenia:
 
 Cel:
 
-* $max \ \sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot \mathbb{E}(R_p) - m_{pn} \cdot c^{mag})$
+* $\max \ \sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot \mathbb{E}(R_p) - m_{pn} \cdot c^{mag})$
     -- maksymalizacja łącznego zysku, czyli różnicy dochodu ze sprzedaży
     produktów i wydatków na magazynowanie produktów na przestrzeni rozpatrywanych
     miesięcy (koszty magazynowania na miesiąc grudzień pominięte)
 
 ### Wyniki działania modelu
 
-Powyższy model został zaimplementowany w języku AMPL i uruchomiony przy użyciu solvera CPLEX. Poniżej wyniki działania.
+Powyższy model został zaimplementowany w języku AMPL i uruchomiony przy użyciu
+solwera CPLEX. Implementacja znajduje się w plikach: `src/z1.{dat,mod,run}`.
+Poniżej wyniki działania.
 
 Wartość funkcji celu:
 
@@ -184,3 +186,116 @@ $$\sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot \mathbb{E}(R_p) - m_
   rozważane w zadaniu).
 
 ## Zadanie 2
+
+### Założenia
+
+Tym razem model będzie rozważał również miarę ryzyka przy generacji rozwiązań.
+Nie uda się zatem uniknąć generacji próbek (scenariuszy) z rozkładu zmiennej
+losowej $R$ jak w przypadku pierwszego zadania, bo nie byłoby sposobu na
+obliczenie wartości miary ryzyka.
+
+Rozwiązywane zadanie jest wielokryterialne, należy zatem zastosować jedną z
+metod generacji rozwiązań efektywnych dla zadań wielokryterialnych.
+
+Początkowym moim pomysłem było podejście progowe (ograniczenie ryzyka do
+kolejnych konkretnych wartości i maksymalizowanie wartości oczekiwanej zysków).
+Niestety takie podejście, o ile w tym przypadku zdawało się dawać zadowalające
+wyniki, to nie gwarantuje generacji wyłącznie rozwiązań efektywnych. Wynika to z
+faktu, że nic nie stoi na przeszkodzie, żeby wygenerowany punkt nie był
+zdominowany przez inny punkt o takiej samej wartości oczekiwanej profitu, ale
+nieco mniejszym ryzyku.
+
+W związku z powyższym, w końcowym rozwiązaniu zastosowałem zamiast tego metodę
+punktu referencyjnego. Ma ona tę wadę, że parametry końcowego rozwiązanie będą
+się z dużym prawdopodobieństwem nieco różnić od zadanych progów, jednak w zamian
+wygenerowane rozwiązanie będzie z pewnością rozwiązaniem efektywnym.
+
+Do implementacji metody punktu referencyjnego użyłem ,,inżynierskiej'' wersji
+maksymalizacji leksykograficznej. Parametr $\rho$ reguluje istotność drugiego
+kryterium (sumy) w tej metodzie.
+
+### Model rozwiązania
+
+Rdzeń modelu rozwiązania będzie identyczny jak w przypadku zadania 1. Zmiany będą dotyczyły:
+
+* obliczania wartości oczekiwanej dochodów,
+* dodania elementów związanych z ryzykiem,
+* zmiany funkcji celu na taką zgodną z metodą punktu referencyjnego dla
+  kryteriów: zysku i ryzyka.
+
+Zbiory:
+
+* $S = \{1, 2, ..., 100\}$ -- scenariusze
+
+Parametry:
+
+* $\mathbb{E}(R_p) \quad p \in P$ -- parametr usunięty
+* $R_{ps} \quad p \in P, s \in S$ -- jednostkowy dochód za produkt $p$ dla
+  scenariusza $s$ [zł/szt]
+* $\rho$ -- istotność drugiego kryterium (sumy) w metodzie punktu referencyjnego
+  [brak jednostki]
+* $a_{r}$ -- wartość aspiracji dla ryzyka w metodzie punktu referencyjnego [zł]
+* $a_{z}$ -- wartość aspiracji dla średnich zysków w metodzie punktu
+  referencyjnego [zł]
+* $\lambda_{r}$ -- istotność ryzyka w metodzie punktu referencyjnego [brak
+  jednostki]
+* $\lambda_{z}$ -- istotność średnich zysków w metodzie punktu referencyjnego
+  [brak jednostki]
+
+Zmienne:
+
+* $r_s \quad s \in S$ -- odchylenie zysków ze scenariusza $s$ od średniej [zł]
+* $r_s^+, r_s^- \quad s \in S$ -- odpowiednio ,,nadmiar'' i ,,niedobór'' zysków
+  ze scenariusza $s$ w stosunku do średniej [zł]; służą do obliczenia wartości
+  bezwzględnej we wzorze na odchylenie przeciętne
+* $r^{śr}$ -- wartość odchylenia przeciętnego zysków (miara ryzyka) [zł]
+* $z_s \quad s \in S$ -- łączny zysk dla scenariusza $s$ [zł]
+* $z^{śr}$ -- wartość oczekiwana łącznego zysku [zł]
+* $f$ -- minimum z wartości odchylenia: profitu lub ryzyka od aspiracji w
+  metodzie punktu referencyjnego
+
+Ograniczenia:
+
+* $r_s^+, r_s^- \ge 0 \quad \forall s \in S$ -- ,,nadmiary'' i ,,niedobory''
+  zysków są nieujemne
+* $r_s = r_s^+ - r_s^-$ -- odchylenie zysków ze scenariusza $s$ od średniej
+  składa się z ,,nadmiaru'' i ,,niedoboru''
+* $r_s = z^{śr} - z_s \quad \forall s \in S$ -- obliczanie odchylenia zysków ze
+  scenariusza $s$ od średniej
+* $r^{śr} = \sum\limits_{s \in S} (r_s^+ + r_s^-) \cdot \frac{1}{|S|}$ --
+  obliczanie odchylenia przeciętnego; zakładam, że prawdopodobieństwa
+  scenariuszy są jednakowe, dlatego we wzorze występuje dzielenie przez liczność
+  scenariuszy
+* $z_s = \sum\limits_{n \in N} \sum\limits_{p \in P} (x_{pn} \cdot R_{ps} - m_{pn} \cdot c^{mag}) \quad \forall s \in S$
+  -- obliczanie łącznego zysku dla scenariusza $s$; analogicznie jak funkcja
+  celu w zadaniu 1, jednak zamiast wartości oczekiwanej zmiennej losowej $R$
+  jest wartość konkretnej próbki
+* $z^{śr} = \sum\limits_{s \in S} z_s \cdot \frac{1}{|S|}$ -- obliczanie
+  średniego łącznego zysku względem wszystkich scenariuszy
+* $f \le \lambda_z (z^{śr} - a_z)$ -- wartość minimalna odchylenia w metodzie
+  punktu referencyjnego jest mniejsza lub równa niż odchylenie średniego profitu
+  od aspiracji
+* $f \le \lambda_r (a_r - r^{śr})$ -- wartość minimalna odchylenia w metodzie
+  punktu referencyjnego jest mniejsza lub równa niż odchylenie miary
+  przeciętnego odchylenia od aspiracji; wartości w nawiasie są zamienione
+  miejscami, bo przeciętne odchylenie jest minimalizowane
+
+Cel:
+
+* $lexmax \ (f, \lambda_z (z^{śr} - a_z) + \lambda_r (a_r - r^{śr}))$ -- funkcja celu dla metody punktu referencyjnego: maksymalizacja w pierwszej kolejności minimum z odchyleń od aspiracji, a w drugiej kolejności sumy wszystkich odchyleń. Funkcja $lexmax$ jest realizowana metodą ,,inżynierską'' w następujący sposób:
+
+  $$\max \ f + \rho(\lambda_z (z^{śr} - a_z) + \lambda_r (a_r - r^{śr}))$$
+
+### Generacja scenariuszy
+
+W celu otrzymania próbek zmiennej losowej $R$ dla poszczególnych scenariuszy,
+znalazłem bibliotekę [_Truncated Normal and Student's t-distribution
+toolbox_](https://www.mathworks.com/matlabcentral/fileexchange/53796-truncated-normal-and-student-s-t-distribution-toolbox?s_tid=prof_contriblnk)
+do programu _MatLab_, która pozwala na generację próbek z wielowymiarowego
+rozkładu t-Studenta z ograniczoną dziedziną. Kod generujący próbki znajduje się
+w pliku `src/generate_samples.m`, a wynik jego działania jest w
+`out/z2-samples.csv`.
+
+Próbki należało również przekształcić do formatu `.dat` w celu odczytania przez
+AMPL, dlatego napisałem też skrypt `src/csv_to_dat_param.py`, który na podstawie
+pliku `.csv` generowanego z _MatLaba_ tworzy plik `out/z2-samples.dat`.

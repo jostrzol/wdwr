@@ -25,19 +25,19 @@ param a_profit;
 var sale {p in Products, n in Months} >= 0, <= max_sale[p,n];
 var production {p in Products, n in Months} >= 0;
 var storage {p in Products, n in {0} union Months} >= 0;
-var storage_group_chosen {g in StorageGroups, n in Months} >= 0, <= 1;  # TODO: integer?
+var storage_group_chosen {g in StorageGroups, n in Months} binary;
 var risk_plus {Scenarios} >= 0;
 var risk_minus {Scenarios} >= 0;
 var risk {s in Scenarios} = risk_plus[s] - risk_minus[s];
 var risk_average = sum {s in Scenarios} (risk_plus[s] + risk_minus[s]) / n_scenarios;
-
-var min_target;
 
 var profit {s in Scenarios} =
   sum {p in Products, n in Months} (
     sale[p,n] * revenue[p,s] - storage[p,n] * storage_unit_cost_per_month
   );
 var profit_average = sum{s in Scenarios} profit[s] / n_scenarios;
+
+var min_target;
 
 s.t. machine_usage_time_limit {m in Machines, n in Months}:
   sum {p in Products} production[p,n] * unit_production_time[m,p]
@@ -57,14 +57,14 @@ s.t. ampere_law_for_products {n in Months, p in Products}:
   production[p,n] + storage[p,n-1] = sale[p,n] + storage[p,n];
 
 s.t. risk_calculate {s in Scenarios}:
-  risk[s] = (profit_average - profit[s]) / n_scenarios;
+  risk[s] = (profit_average - profit[s]);
 
 s.t. min_target_risk:
   min_target <= lambda_risk * (a_risk - risk_average);
 s.t. min_target_profit:
   min_target <= lambda_profit * (profit_average - a_profit);
 
-maximize maximize_profit_average:
+maximize maximize_min_target_then_all_targets:
   min_target + rho * (
     lambda_risk * (a_risk - risk_average)
     + lambda_profit * (profit_average - a_profit)

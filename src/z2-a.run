@@ -7,12 +7,12 @@ model src/z2.mod;
 data src/z2.dat;
 data out/z2-samples.dat;
 
-let rho := 0.00001;
+let rho := 0.000001;
 let lambda_risk := 1000;
-let lambda_profit := 0.0001;
+let lambda_profit := 0.001;
 let a_profit := -500;
 
-set in_a_risk := {0 .. 42 by 1};
+set in_a_risk := {0 .. 840 by 20};
 var out_risk{in_a_risk};
 var out_profit_average{in_a_risk};
 
