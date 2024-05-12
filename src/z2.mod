@@ -15,7 +15,12 @@ param storage_unit_cost_per_month;
 param max_storage_in_month;
 param initial_stored_products {Products};
 param work_hours_in_month;
-param risk_max;
+
+param rho;
+param lambda_risk;
+param lambda_profit;
+param a_risk;
+param a_profit;
 
 var sale {p in Products, n in Months} >= 0, <= max_sale[p,n];
 var production {p in Products, n in Months} >= 0;
@@ -24,13 +29,15 @@ var storage_group_chosen {g in StorageGroups, n in Months} >= 0, <= 1;  # TODO: 
 var risk_plus {Scenarios} >= 0;
 var risk_minus {Scenarios} >= 0;
 var risk {s in Scenarios} = risk_plus[s] - risk_minus[s];
-var risk_total = sum {s in Scenarios} (risk_plus[s] + risk_minus[s]) / n_scenarios;
+var risk_average = sum {s in Scenarios} (risk_plus[s] + risk_minus[s]) / n_scenarios;
+
+var min_target;
 
 var profit {s in Scenarios} =
   sum {p in Products, n in Months} (
     sale[p,n] * revenue[p,s] - storage[p,n] * storage_unit_cost_per_month
   );
-var average_profit = sum{s in Scenarios} profit[s] / n_scenarios;
+var profit_average = sum{s in Scenarios} profit[s] / n_scenarios;
 
 s.t. machine_usage_time_limit {m in Machines, n in Months}:
   sum {p in Products} production[p,n] * unit_production_time[m,p]
@@ -50,10 +57,15 @@ s.t. ampere_law_for_products {n in Months, p in Products}:
   production[p,n] + storage[p,n-1] = sale[p,n] + storage[p,n];
 
 s.t. risk_calculate {s in Scenarios}:
-  risk[s] = (average_profit - profit[s]) / n_scenarios;
+  risk[s] = (profit_average - profit[s]) / n_scenarios;
 
-s.t. risk_max_limit:
-   risk_total <= risk_max;
+s.t. min_target_risk:
+  min_target <= lambda_risk * (a_risk - risk_average);
+s.t. min_target_profit:
+  min_target <= lambda_profit * (profit_average - a_profit);
 
-maximize maximize_average_profit:
-  average_profit;
+maximize maximize_profit_average:
+  min_target + rho * (
+    lambda_risk * (a_risk - risk_average)
+    + lambda_profit * (profit_average - a_profit)
+  );

@@ -4,7 +4,11 @@ model src/z2.mod;
 data src/z2.dat;
 data out/z2-samples.dat;
 
-let risk_max := 100;
+let rho := 0.00001;
+let lambda_risk := 1000;
+let lambda_profit := 0.0001;
+let a_risk := 10;
+let a_profit := -500;
 
 solve;
 
@@ -15,4 +19,4 @@ display { n in Months, m in Machines } (
 );
 display { n in Months, p in Products } (production[p,n], sale[p,n], storage[p,n]);
 display profit, {s in Scenarios} abs(risk[s]);
-display average_profit, risk_total;
+display profit_average, risk_average;

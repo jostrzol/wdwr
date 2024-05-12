@@ -7,15 +7,20 @@ model src/z2.mod;
 data src/z2.dat;
 data out/z2-samples.dat;
 
-set in_risks_max := {0 .. 42 by 1};
-var out_risk{in_risks_max};
-var out_average_profit{in_risks_max};
+let rho := 0.00001;
+let lambda_risk := 1000;
+let lambda_profit := 0.0001;
+let a_profit := -500;
 
-for {m in in_risks_max} {
-	let risk_max := m;
+set in_a_risk := {0 .. 42 by 1};
+var out_risk{in_a_risk};
+var out_profit_average{in_a_risk};
+
+for {a in in_a_risk} {
+	let a_risk := a;
 	solve >/dev/null;
-	let out_risk[m] := risk_total;
-	let out_average_profit[m] := average_profit;
+	let out_risk[a] := risk_average;
+	let out_profit_average[a] := profit_average;
 }
 
-display out_risk, out_average_profit;
+display out_risk, out_profit_average;

@@ -92,7 +92,7 @@ def df_write_dat(
 if __name__ == "__main__":
     text = """
 set in_risks_max := 5 20 37;
-:   out_risks out_average_profits    :=
+:   out_risks out_profit_averages    :=
 0       0            -300
 1       1             529.379
 2       2            1208.76

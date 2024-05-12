@@ -7,12 +7,17 @@ model src/z2.mod;
 data src/z2.dat;
 data out/z2-samples.dat;
 
-set in_risks_max := {5, 20, 37};
+let rho := 0.00001;
+let lambda_risk := 1000;
+let lambda_profit := 0.0001;
+let a_profit := -500;
 
-display in_risks_max;
+set in_a_risk := {5, 20, 37};
 
-for {m in in_risks_max} {
-	let risk_max := m;
+display in_a_risk;
+
+for {a in in_a_risk} {
+	let a_risk := a;
 	solve >/dev/null;
 	display profit, {s in Scenarios} abs(risk[s]);
 }
