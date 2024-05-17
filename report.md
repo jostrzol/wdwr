@@ -225,7 +225,7 @@ Rdzeń modelu rozwiązania będzie identyczny jak w przypadku zadania 1. Zmiany 
 
 Zbiory:
 
-* $S = \{1, 2, ..., 100\}$ -- scenariusze
+* $S = \{1, 2, ..., 500\}$ -- scenariusze
 
 Parametry:
 
@@ -297,7 +297,7 @@ w pliku `src/generate_samples.m`, a wynik jego działania jest w
 `out/z2-samples.csv`.
 
 Próbki należało również przekształcić do formatu `.dat` w celu odczytania przez
-AMPL, dlatego napisałem też skrypt `src/csv_to_dat_param.py`, który na podstawie
+AMPL, dlatego napisałem też skrypt `src/samples_to_dat.py`, który na podstawie
 pliku `.csv` generowanego z _MatLaba_ tworzy plik `out/z2-samples.dat`.
 
 ### Wyniki działania modelu

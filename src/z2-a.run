@@ -17,6 +17,7 @@ var out_risk{in_a_risk};
 var out_profit_average{in_a_risk};
 
 for {a in in_a_risk} {
+	display a;
 	let a_risk := a;
 	solve >/dev/null;
 	let out_risk[a] := risk_average;

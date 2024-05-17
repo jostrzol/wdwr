@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from typing import TextIO
+from typing import TextIO, Any
 from io import StringIO
 
 
@@ -65,6 +65,14 @@ def _try_convert(array: np.ndarray) -> np.ndarray:
         except Exception:
             pass
     return array
+
+
+def scalar_write_dat(
+    value: Any,
+    output: TextIO,
+    name: str,
+):
+    output.write(f"param {name} := {value};\n")
 
 
 def df_write_dat(

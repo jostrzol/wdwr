@@ -35,5 +35,3 @@ param initial_stored_products :=
   P4 50,
 ;
 param work_hours_in_month := 348;
-
-param n_scenarios := 20;
