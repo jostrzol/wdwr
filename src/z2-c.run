@@ -1,7 +1,7 @@
 reset;
 option solver cplex;
 option reset_initial_guesses 1;
-option cplex_options 'outlev=0';
+option cplex_options 'outlev=0 concurrentopt time=180';
 option solver_msg 0;
 model src/z2.mod;
 data src/z2.dat;
@@ -12,12 +12,17 @@ let lambda_risk := 1000;
 let lambda_profit := 0.001;
 let a_profit := -500;
 
-set in_a_risk := {100, 400, 740};
+set in_a_risk := {100, 400, 740} ordered;
+param i := 1;
 
-display in_a_risk;
+display in_a_risk >./out/z2-c-out.dat;
 
 for {a in in_a_risk} {
+	printf "iteration: %d/%d ", ord(a), card(in_a_risk);
 	let a_risk := a;
 	solve >/dev/null;
+	printf "[%f s]\n", _solve_time;
+
 	display profit, {s in Scenarios} abs(risk[s]);
+	display profit, {s in Scenarios} abs(risk[s]) >./out/z2-c-out.dat;
 }

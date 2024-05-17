@@ -1,5 +1,6 @@
 reset;
 option solver cplex;
+option cplex_options 'mipgap=1e-3';
 model src/z2.mod;
 data src/z2.dat;
 data out/z2-samples.dat;
