@@ -87,14 +87,14 @@ Parametry:
     grudnia) [szt]
 * $h^{rob} = 24 \cdot 8 \cdot 2 = 348$ -- liczba godzin roboczych w miesiącu [h]
 
-Zmienne decyzyjne:
+Zmienne:
 
-* $x_{pn} \quad p \in P, n \in N$ -- liczba sprzedanych produktów $p$ w miesiącu $n$ [szt]
-* $p_{pn} \quad p \in P, n \in N$ -- liczba wyprodukowanych produktów $p$ w miesiącu $n$ [szt]
-* $m_{pn} \quad p \in P, n \in (\{0\} \cup N)$ -- liczba zmagazynowanych
-    produktów $p$ na koniec miesiąca $n$ [szt]
-* $u_{gn} \quad g \in G, n \in N$ -- czy grupa produktów $g$ jest magazynowana
-    w miesiącu $n$ (zmienna binarna: 0 -- nie, 1 -- tak)
+* $x_{pn} \in \mathbb{Z} \quad p \in P, n \in N$ -- liczba sprzedanych produktów $p$ w miesiącu $n$ [szt]
+* $p_{pn} \in \mathbb{Z} \quad p \in P, n \in N$ -- liczba wyprodukowanych produktów $p$ w miesiącu $n$ [szt]
+* $m_{pn} \in \mathbb{Z} \quad p \in P, n \in (\{0\} \cup N)$ -- liczba
+    zmagazynowanych produktów $p$ na koniec miesiąca $n$ [szt]
+* $u_{gn} \in \{0, 1\} \quad g \in G, n \in N$ -- czy grupa produktów $g$ jest
+    magazynowana w miesiącu $n$ (0 -- nie, 1 -- tak)
 
 Ograniczenia:
 
@@ -225,11 +225,11 @@ Rdzeń modelu rozwiązania będzie identyczny jak w przypadku zadania 1. Zmiany 
 
 Zbiory:
 
-* $S = \{1, 2, ..., 500\}$ -- scenariusze
+* $S = \{1, 2, ..., 100\}$ -- scenariusze
 
 Parametry:
 
-* $\mathbb{E}(R_p) \quad p \in P$ -- parametr usunięty
+* usunięto: $\mathbb{E}(R_p) \quad p \in P$
 * $R_{ps} \quad p \in P, s \in S$ -- jednostkowy dochód za produkt $p$ dla
   scenariusza $s$ [zł/szt]
 * $\rho$ -- istotność drugiego kryterium (sumy) w metodzie punktu referencyjnego
@@ -251,7 +251,7 @@ Zmienne:
 * $r^{śr}$ -- wartość odchylenia przeciętnego zysków (miara ryzyka) [zł]
 * $z_s \quad s \in S$ -- łączny zysk dla scenariusza $s$ [zł]
 * $z^{śr}$ -- wartość oczekiwana łącznego zysku [zł]
-* $f$ -- minimum z wartości odchylenia: profitu lub ryzyka od aspiracji w
+* $f$ -- minimum z wartości odchyleń: profitu i ryzyka od aspiracji w
   metodzie punktu referencyjnego
 
 Ograniczenia:
@@ -293,12 +293,12 @@ znalazłem bibliotekę [_Truncated Normal and Student's t-distribution
 toolbox_](https://www.mathworks.com/matlabcentral/fileexchange/53796-truncated-normal-and-student-s-t-distribution-toolbox?s_tid=prof_contriblnk)
 do programu _MatLab_, która pozwala na generację próbek z wielowymiarowego
 rozkładu t-Studenta z ograniczoną dziedziną. Kod generujący próbki znajduje się
-w pliku `src/generate_samples.m`, a wynik jego działania jest w
-`out/z2-samples.csv`.
+w pliku `src/generate_samples.m`, a wynik jego działania jest w plikach
+`out/z2-samples*.csv`.
 
 Próbki należało również przekształcić do formatu `.dat` w celu odczytania przez
 AMPL, dlatego napisałem też skrypt `src/samples_to_dat.py`, który na podstawie
-pliku `.csv` generowanego z _MatLaba_ tworzy plik `out/z2-samples.dat`.
+pliku `.csv` generowanego z _MatLaba_ tworzy plik `.dat`.
 
 ### Wyniki działania modelu
 
@@ -307,7 +307,7 @@ solwera CPLEX. Implementacja znajduje się w plikach: `src/z2.{dat,mod,run}`.
 Dodatkowo pliki `src/z2-a.run` i `src/z2-c.run` uruchamiają model dla kilku
 wartości aspiracji $a_r$ na potrzeby podpunktów _a_ i _c_.
 
-Nastawy parametrów metody punktu referencyjnego są dla każdego uruchomienia stałe z wyjątkiem $a_r$ i równe:
+Nastawy parametrów metody punktu referencyjnego z wyjątkiem $a_r$ są dla każdego uruchomienia stałe i równe:
 
 * $\rho = 0.000001$ -- wyznaczony eksperymentalnie tak, by drugie kryterium nie
   zakłócało działania pierwszego
@@ -345,7 +345,8 @@ Następnie otrzymane wyniki naniosłem na wykres. Na wykresie odwróciłem oś O
 
 ![Zbiór rozwiązań efektywnych zadania w przestrzeni ryzyko-zysk](./out/z2-a-plot.png)
 
-Widać, że żadne z widocznych rozwiązań nie dominuje żadnego innego, co sugeruje, że zadanie się udało.
+Widać, że żadne z wyliczonych rozwiązań nie dominuje żadnego innego, co
+sugeruje, że zadanie się udało.
 
 #### Rozwiązanie maksymalnego zysku
 
@@ -403,4 +404,5 @@ wykres dystrybuanty zysków pokazuje to lepiej.
 
 Dystrybuanta również jednoznacznie pokazuje, że $R1 \prec_{FSD} R2 \prec_{FSD}
 R3$. Aby otrzymywać jedynie rozwiązania FSD-efektywne, należałoby zmienić
-podejście generacji rozwiązań.
+podejście generacji rozwiązań lub w jakiś sposób odfiltrować rozwiązania
+nie-FSD-efektywne.

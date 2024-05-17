@@ -22,9 +22,9 @@ param lambda_profit;
 param a_risk;
 param a_profit;
 
-var sale {p in Products, n in Months} >= 0, <= max_sale[p,n];
-var production {p in Products, n in Months} >= 0;
-var storage {p in Products, n in {0} union Months} >= 0;
+var sale {p in Products, n in Months} >= 0, <= max_sale[p,n], integer;
+var production {p in Products, n in Months} >= 0, integer;
+var storage {p in Products, n in {0} union Months} >= 0, integer;
 var storage_group_chosen {g in StorageGroups, n in Months} binary;
 var risk_plus {Scenarios} >= 0;
 var risk_minus {Scenarios} >= 0;

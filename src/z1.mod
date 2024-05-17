@@ -14,9 +14,9 @@ param max_storage_in_month;
 param initial_stored_products {Products};
 param work_hours_in_month;
 
-var sale {p in Products, n in Months} >= 0, <= max_sale[p,n];
-var production {p in Products, n in Months} >= 0;
-var storage {p in Products, n in {0} union Months} >= 0;
+var sale {p in Products, n in Months} >= 0, <= max_sale[p,n] integer;
+var production {p in Products, n in Months} >= 0, integer;
+var storage {p in Products, n in {0} union Months} >= 0, integer;
 var storage_group_chosen {g in StorageGroups, n in Months} binary;
 
 s.t. machine_usage_time_limit {m in Machines, n in Months}:
