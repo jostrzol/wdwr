@@ -83,8 +83,8 @@ Parametry:
 * $c^{mag} = 1$ -- cena magazynowania jednostki produktu przez miesiąc [zł/szt]
 * $m^{max} = 200$ -- maksymalna liczba zmagazynowanych jednostek danego produktu
     na miesiąc [szt]
-* $m^{start}_{p}$ -- liczba zmagazynowanych produktów $p$ na start (na koniec
-    grudnia) [szt]
+* $m^{start}_{p} \quad p \in P$ -- liczba zmagazynowanych produktów $p$ na start
+    (na koniec grudnia) [szt]
 * $h^{rob} = 24 \cdot 8 \cdot 2 = 348$ -- liczba godzin roboczych w miesiącu [h]
 
 Zmienne:
@@ -101,7 +101,6 @@ Ograniczenia:
 * $x_{pn} \ge 0 \quad \forall p \in P, n \in N$ -- sprzedaż nieujemna
 * $p_{pn} \ge 0 \quad \forall p \in P, n \in N$ -- produkcja nieujemna
 * $m_{pn} \ge 0 \quad \forall p \in P, n \in N$ -- stan magazynu nieujemny
-* $u_{gn} \in \{0, 1\} \quad \forall g \in G, n \in N$ -- zmienna binarna
 * $\sum\limits_{p  \in P} p_{pn} \cdot t_{mp} \le h^{rob} \cdot n_m \quad \forall m \in M, n \in N$
     -- łączny czas użycia maszyny $m$ w miesiącu $n$ nie przekracza liczby roboczych godzin
 * $x_{pn} \le x^{max}_{pn} \quad \forall p \in P, n \in N$ -- sprzedaż produktu $p$
@@ -258,7 +257,7 @@ Ograniczenia:
 
 * $r_s^+, r_s^- \ge 0 \quad \forall s \in S$ -- ,,nadmiary'' i ,,niedobory''
   zysków są nieujemne
-* $r_s = r_s^+ - r_s^-$ -- odchylenie zysków ze scenariusza $s$ od średniej
+* $r_s = r_s^+ - r_s^- \quad \forall s \in S$ -- odchylenie zysków ze scenariusza $s$ od średniej
   składa się z ,,nadmiaru'' i ,,niedoboru''
 * $r_s = z^{śr} - z_s \quad \forall s \in S$ -- obliczanie odchylenia zysków ze
   scenariusza $s$ od średniej
@@ -294,7 +293,7 @@ toolbox_](https://www.mathworks.com/matlabcentral/fileexchange/53796-truncated-n
 do programu _MatLab_, która pozwala na generację próbek z wielowymiarowego
 rozkładu t-Studenta z ograniczoną dziedziną. Kod generujący próbki znajduje się
 w pliku `src/generate_samples.m`, a wynik jego działania jest w plikach
-`out/z2-samples*.csv`.
+`out/z2-samples.csv`.
 
 Próbki należało również przekształcić do formatu `.dat` w celu odczytania przez
 AMPL, dlatego napisałem też skrypt `src/samples_to_dat.py`, który na podstawie
@@ -305,7 +304,7 @@ pliku `.csv` generowanego z _MatLaba_ tworzy plik `.dat`.
 Powyższy model został zaimplementowany w języku AMPL i uruchomiony przy użyciu
 solwera CPLEX. Implementacja znajduje się w plikach: `src/z2.{dat,mod,run}`.
 Dodatkowo pliki `src/z2-a.run` i `src/z2-c.run` uruchamiają model dla kilku
-wartości aspiracji $a_r$ na potrzeby podpunktów _a_ i _c_.
+wartości aspiracji $a_r$ na potrzeby podpunktów _a_ i _c_. Z racji na dużą liczbę zmiennych całkowitoliczbowych (szczególnie produkcja, sprzedaż i stany magazynów), rozwiązanie dla niektórych parametrów odbywa się bardzo długo. Z tego powodu ograniczyłem czas rozwiązywania do $180 s$ na jeden zestaw parametrów, co sprawia że wyliczenie wszystkich punktów zajmuje ok. $2 h$.
 
 Nastawy parametrów metody punktu referencyjnego z wyjątkiem $a_r$ są dla każdego uruchomienia stałe i równe:
 
@@ -362,7 +361,9 @@ swoją maksymalną wartość.
 | 600   | 599.834  | 13390.6   |
 | 620   | 619.674  | 13613.4   | -->
 
-Następnie otrzymane wyniki naniosłem na wykres. Na wykresie odwróciłem oś OX, bo ryzyko jest minimalizowane.
+Następnie otrzymane wyniki naniosłem na wykres. Na wykresie odwróciłem oś OX,
+żeby kierunek optymalizacji był skierowany intuicyjnie, w stronę pierwszej
+ćwiartki układu współrzędnych (ryzyko jest minimalizowane).
 
 ![Zbiór rozwiązań efektywnych zadania w przestrzeni ryzyko-zysk](./out/z2-a-plot.png)
 
