@@ -13,7 +13,6 @@ let lambda_profit := 0.001;
 let a_profit := -500;
 
 set in_a_risk := {100, 400, 740} ordered;
-param i := 1;
 
 display in_a_risk >./out/z2-c-out.dat;
 

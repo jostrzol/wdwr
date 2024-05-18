@@ -206,7 +206,7 @@ zdominowany przez inny punkt o takiej samej wartości oczekiwanej profitu, ale
 nieco mniejszym ryzyku.
 
 W związku z powyższym, w końcowym rozwiązaniu zastosowałem zamiast tego metodę
-punktu referencyjnego. Ma ona tę wadę, że parametry końcowego rozwiązanie będą
+punktu referencyjnego. Ma ona tę wadę, że parametry końcowego rozwiązania będą
 się z dużym prawdopodobieństwem nieco różnić od zadanych progów, jednak w zamian
 wygenerowane rozwiązanie będzie z pewnością rozwiązaniem efektywnym.
 
@@ -321,25 +321,46 @@ Nastawy parametrów metody punktu referencyjnego z wyjątkiem $a_r$ są dla każ
 #### Zbiór rozwiązań efektywnych
 
 W celu wyznaczenia zbioru rozwiązań efektywnych w przestrzeni ryzyko-zysk,
-uruchomiłem model dla różnych wartości aspiracji $a_r$. Wyniki dla $a_r \ge 820$
+uruchomiłem model dla różnych wartości aspiracji $a_r$. Wyniki dla $a_r \ge 680$
 zaczynają się powtarzać, co oznacza że w tym przypadku średni zysk osiągnął już
 swoją maksymalną wartość.
 
-| $a_r$ | $r^{śr}$ | $z^{śr}$  |
-|-------|----------|-----------|
-| 0     |   0      |  -300     |
-| 20    |  19.999  |   529.344 |
-| 40    |  39.9983 |  1208.7   |
-| 60    |  59.9976 |  1888.06  |
-| 80    |  79.9969 |  2567.41  |
-| 100   |  99.9963 |  3246.77  |
-| ...   | ...      | ...       |
-| 740   | 739.986  | 13674.1   |
-| 760   | 759.986  | 13830.2   |
-| 780   | 779.986  | 13986.2   |
-| 800   | 799.985  | 14142.2   |
-| 820   | 816.903  | 14274.2   |
-| 840   | 816.903  | 14274.2   |
+| $a_r$ | $r^{śr}$ | $z^{śr}$  | | $a_r$ | $r^{śr}$ | $z^{śr}$  |
+|-------|----------|-----------|-|-------|----------|-----------|
+| 0     |  0.0     | -300.0    | | 640   | 639.811  | 13831.1   |
+| 20    | 19.9796  | 504.977   | | 660   | 659.653  | 14036.6   |
+| 40    | 39.9916  | 1164.14   | | 680   | 663.134  | 14071.2   |
+| 60    | 59.9849  | 1821.6    | | 700   | 663.134  | 14071.2   |
+| 80    | 79.9858  | 2479.87   | | 720   | 663.134  | 14071.2   |
+| 100   | 99.9915  | 3137.94   | | 740   | 663.134  | 14071.2   |
+| 120   | 119.973  | 3787.16   | | 760   | 663.134  | 14071.2   |
+| 140   | 139.993  | 4418.61   | | 780   | 663.134  | 14071.2   |
+| 160   | 159.98   | 5050.11   | | 800   | 663.134  | 14071.2   |
+| 180   | 179.979  | 5681.19   | | 820   | 663.134  | 14071.2   |
+| ...   | ...      | ...       | | 840   | 663.134  | 14071.2   |
+
+<!-- | 200   | 199.991  | 6312.74   |
+| 220   | 219.99   | 6944.51   |
+| 240   | 239.977  | 7529.48   |
+| 260   | 259.946  | 7985.78   |
+| 280   | 279.985  | 8403.45   |
+| 300   | 299.981  | 8786.89   |
+| 320   | 319.956  | 9154.19   |
+| 340   | 339.985  | 9500.3    |
+| 360   | 359.987  | 9839.49   |
+| 380   | 379.928  | 10173.9   |
+| 400   | 399.985  | 10505.6   |
+| 420   | 419.956  | 10836.6   |
+| 440   | 439.958  | 11166.2   |
+| 460   | 459.984  | 11491.1   |
+| 480   | 479.982  | 11818.9   |
+| 500   | 499.956  | 12135.5   |
+| 520   | 519.955  | 12431.6   |
+| 540   | 539.963  | 12703.2   |
+| 560   | 559.937  | 12941.4   |
+| 580   | 579.885  | 13166.0   |
+| 600   | 599.834  | 13390.6   |
+| 620   | 619.674  | 13613.4   | -->
 
 Następnie otrzymane wyniki naniosłem na wykres. Na wykresie odwróciłem oś OX, bo ryzyko jest minimalizowane.
 
@@ -351,8 +372,8 @@ sugeruje, że zadanie się udało.
 #### Rozwiązanie maksymalnego zysku
 
 znajduje się na wykresie na lewym krańcu zbioru. Posiada ono wartość średniego
-zysku $z^{śr} = 14274.4$ zbliżoną do wyniku z pierwszego zadania, co sugeruje
-poprawność wykonania obu zadań. Wtedy ryzyko wynosi ok. $r^{śr} = 816.9$.
+zysku $z^{śr} = 14071.2$ zbliżoną do wyniku z pierwszego zadania, co sugeruje
+poprawność wykonania obu zadań. Wtedy ryzyko wynosi ok. $r^{śr} = 663.1$.
 
 #### Rozwiązanie minimalnego ryzyka
 
@@ -362,7 +383,7 @@ ze scenariuszy zysk wynosi $-300$ zł. Takie rozwiązane, o ile efektywne w
 zadanym problemie wielokryterialnym, jest oczywiście całkowicie niedopuszczalne
 dla każdego rozsądnego decydenta i zdominowane w sensie FSD przez wiele innych
 rozwiązań. Prawdopodobnie w wyznaczonym zbiorze istnieje więcej takich
-problematycznych rozwiązań.
+problematycznych przypadków.
 
 #### Analiza dominacji FSD
 
@@ -370,35 +391,28 @@ została przeprowadzona dla 3 rozwiązań. Ich punkty aspiracji ryzyka to: $100$
 $400$ i $740$. Rozwiązania oznaczę odpowiednio $R1$, $R2$ i $R3$. Dzięki
 analizie FSD można sprawdzić, czy któreś z nich jest zdominowane przez inne.
 
-Poniżej tabela posortowanych niemalejąco ocen dla wybranych rozwiązań.
+Poniżej fragment tabeli posortowanych niemalejąco ocen dla wybranych rozwiązań.
 
 | $R1$    | $R2$    | $R3$    |
 |---------|---------|---------|
-| 3049.11 | 9011.18 | 12380.8 |
-| 3079.62 | 9091.47 | 12410.4 |
-| 3106.42 | 9189.33 | 12738.9 |
-| 3123.18 | 9215.99 | 12798.3 |
-| 3149.31 | 9417.94 | 12830.1 |
-| 3151.1  | 9485.39 | 12918.8 |
-| 3178.67 | 9489.04 | 12987.6 |
-| 3186.79 | 9535.02 | 13348.5 |
-| 3216.31 | 9567.75 | 13498.9 |
-| 3227.2  | 9630.19 | 13519.5 |
-| 3246.77 | 9763.32 | 13583.6 |
-| 3246.77 | 9763.32 | 13895.0 |
-| 3246.77 | 9815.82 | 14056.7 |
-| 3249.58 | 9998.72 | 14104.1 |
-| 3261.01 | 10000.3 | 14105.5 |
-| 3302.55 | 10154.7 | 14255.4 |
-| 3346.59 | 10202.7 | 14461.4 |
-| 3418.84 | 10216.9 | 14669.9 |
-| 3476.56 | 10478.4 | 14718.3 |
-| 3672.19 | 11238.8 | 16200.6 |
+| 2843.63 | 9145.04 | 11899.7 |
+| 2853.51 | 9345.1  | 12086.3 |
+| 2864.79 | 9397.9  | 12185.0 |
+| 2871.54 | 9518.35 | 12302.0 |
+| 2897.25 | 9528.94 | 12574.2 |
+| 2909.82 | 9539.58 | 12595.8 |
+| ...     | ...     | ...     |
+| 3369.17 | 11263.5 | 15460.8 |
+| 3379.42 | 11307.9 | 15500.0 |
+| 3381.01 | 11321.9 | 15553.1 |
+| 3393.06 | 11358.4 | 15566.7 |
+| 3416.98 | 11445.4 | 15717.3 |
+| 3429.93 | 11710.9 | 16139.1 |
 
-Już tutaj widać, że $R1 \prec_a R2 \prec_a R3$. Ponieważ zadanie jest
-sprowadzalne do problemu wyboru jednakowo prawdopodobnych loterii, to można
-wywnioskować, że również $R1 \prec_{FSD} R2 \prec_{FSD} R3$, jednak poniższy
-wykres dystrybuanty zysków pokazuje to lepiej.
+Po przeanalizowaniu całości tabeli widać, że $R1 \prec_a R2 \prec_a R3$, bo $y_{R1} \le y_{R2} \le y_{R3}$.
+Jako że zadanie jest sprowadzalne do problemu wyboru jednakowo prawdopodobnych
+loterii, to można wywnioskować, że również $R1 \prec_{FSD} R2 \prec_{FSD} R3$,
+jednak poniższy wykres dystrybuanty zysków pokazuje to lepiej.
 
 ![Dystrybuanta zysków wybranych rozwiązań efektywnych zadania](./out/z2-c-plot.png)
 
