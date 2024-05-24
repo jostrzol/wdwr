@@ -1,4 +1,4 @@
-N = 100;
+N = 5000;
 mu = [9; 8; 7; 6];
 sigma = [
     16, -2, -1, -3;
@@ -13,4 +13,4 @@ samples = samples + mu;
 
 means = mean(samples, 2)
 
-writematrix(samples.', "./out/z2-samples-100.csv");
+writematrix(samples.', "./out/z2-samples.csv");
