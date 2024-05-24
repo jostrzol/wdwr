@@ -13,7 +13,7 @@ let lambda["risk"] := 1000;
 let lambda["profit"] := 0.001;
 let a["profit"] := 100000;
 
-set in_a_risk := {0 .. 715 by 15} ordered;
+set in_a_risk := {0 .. 780 by 15} ordered;
 var out_risk{in_a_risk};
 var out_profit_average{in_a_risk};
 
