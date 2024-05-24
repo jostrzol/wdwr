@@ -1,30 +1,31 @@
 reset;
 option solver cplex;
 option reset_initial_guesses 1;
-option cplex_options 'outlev=0 concurrentopt time=180';
+option cplex_options 'outlev=0 concurrentopt';
 option solver_msg 0;
 model src/z2.mod;
 data src/z2.dat;
 data out/z2-samples.dat;
 
-let rho := 0.000001;
-let lambda_risk := 1000;
-let lambda_profit := 0.001;
-let a_profit := -500;
+let beta := 0.001;
+let epsilon := 0.0001;
+let lambda["risk"] := 1000;
+let lambda["profit"] := 0.001;
+let a["profit"] := 100000;
 
-set in_a_risk := {0 .. 840 by 20} ordered;
+set in_a_risk := {0 .. 715 by 15} ordered;
 var out_risk{in_a_risk};
 var out_profit_average{in_a_risk};
 
-for {a in in_a_risk} {
-	printf "iteration: %d/%d ", ord(a), card(in_a_risk);
-	let a_risk := a;
+for {a_risk in in_a_risk} {
+	printf "iteration: %d/%d ", ord(a_risk), card(in_a_risk);
+	let a["risk"] := a_risk;
 	solve >/dev/null;
 	printf "[%f]\n", _solve_time;
-	let out_risk[a] := risk_average;
-	let out_profit_average[a] := profit_average;
+	let out_risk[a_risk] := risk_average;
+	let out_profit_average[a_risk] := profit_average;
 
-	display out_risk[a], out_profit_average[a];
+	display out_risk[a_risk], out_profit_average[a_risk];
 	display out_risk, out_profit_average >./out/z2-a-out.dat;
 	close ./out/z2-a-out.dat
 }

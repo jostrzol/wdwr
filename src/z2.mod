@@ -6,6 +6,7 @@ param n_months;
 set Months = {1..n_months};
 param n_scenarios;
 set Scenarios = {1..n_scenarios};
+set Targets = {"risk", "profit"};
 
 param machine_count {Machines};
 param unit_production_time {Machines, Products} default 0;
@@ -16,11 +17,10 @@ param max_storage_in_month;
 param initial_stored_products {Products};
 param work_hours_in_month;
 
-param rho;
-param lambda_risk;
-param lambda_profit;
-param a_risk;
-param a_profit;
+param epsilon;
+param beta;
+param lambda {Targets};
+param a {Targets};
 
 var sale {p in Products, n in Months} >= 0, <= max_sale[p,n], integer;
 var production {p in Products, n in Months} >= 0, integer;
@@ -37,6 +37,7 @@ var profit {s in Scenarios} =
   );
 var profit_average = sum{s in Scenarios} profit[s] / n_scenarios;
 
+var target_value {Targets};
 var min_target;
 
 s.t. machine_usage_time_limit {m in Machines, n in Months}:
@@ -59,13 +60,17 @@ s.t. ampere_law_for_products {n in Months, p in Products}:
 s.t. risk_calculate {s in Scenarios}:
   risk[s] = (profit_average - profit[s]);
 
-s.t. min_target_risk:
-  min_target <= lambda_risk * (a_risk - risk_average);
-s.t. min_target_profit:
-  min_target <= lambda_profit * (profit_average - a_profit);
+s.t. target_risk:
+  target_value["risk"] <= -lambda["risk"] * (risk_average - a["risk"]);
+s.t. target_risk_beta:
+  target_value["risk"] <= -beta * lambda["risk"] * (risk_average - a["risk"]);
+s.t. target_profit:
+  target_value["profit"] <= lambda["profit"] * (profit_average - a["profit"]);
+s.t. target_profit_beta:
+  target_value["profit"] <= beta * lambda["profit"] * (profit_average - a["profit"]);
+
+s.t. min_target_less_than_all_values {t in Targets}:
+  min_target <= target_value[t];
 
 maximize maximize_min_target_then_all_targets:
-  min_target + rho * (
-    lambda_risk * (a_risk - risk_average)
-    + lambda_profit * (profit_average - a_profit)
-  );
+  min_target + epsilon * sum {t in Targets} target_value[t];

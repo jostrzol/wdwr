@@ -1,15 +1,15 @@
 reset;
 option solver cplex;
-option cplex_options 'mipgap=1e-3';
 model src/z2.mod;
 data src/z2.dat;
 data out/z2-samples.dat;
 
-let rho := 0.000001;
-let lambda_risk := 1000;
-let lambda_profit := 0.001;
-let a_risk := 200;
-let a_profit := -500;
+let beta := 0.001;
+let epsilon := 0.0001;
+let lambda["risk"] := 1000;
+let lambda["profit"] := 0.001;
+let a["risk"] := 200;
+let a["profit"] := 100000;
 
 solve;
 
