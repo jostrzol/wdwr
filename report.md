@@ -205,12 +205,12 @@ zdominowany przez inny punkt o takiej samej wartości oczekiwanej profitu, ale
 nieco mniejszym ryzyku.
 
 W związku z powyższym, w końcowym rozwiązaniu zastosowałem zamiast tego metodę
-punktu referencyjnego. Ma ona tę wadę, że parametry końcowego rozwiązania będą
+punktu odniesienia. Ma ona tę wadę, że parametry końcowego rozwiązania będą
 się z dużym prawdopodobieństwem nieco różnić od zadanych progów, jednak w zamian
 wygenerowane rozwiązanie będzie z pewnością rozwiązaniem efektywnym.
 
-Do implementacji metody punktu referencyjnego użyłem ,,inżynierskiej'' wersji
-maksymalizacji leksykograficznej. Parametr $\rho$ reguluje istotność drugiego
+Do implementacji metody punktu odniesienia użyłem ,,inżynierskiej'' wersji
+maksymalizacji leksykograficznej. Parametr $\epsilon$ reguluje wagę drugiego
 kryterium (sumy) w tej metodzie.
 
 ### Model rozwiązania
@@ -219,26 +219,26 @@ Rdzeń modelu rozwiązania będzie identyczny jak w przypadku zadania 1. Zmiany 
 
 * obliczania wartości oczekiwanej dochodów,
 * dodania elementów związanych z ryzykiem,
-* zmiany funkcji celu na taką zgodną z metodą punktu referencyjnego dla
+* zmiany funkcji celu na taką zgodną z metodą punktu odniesienia dla
   kryteriów: zysku i ryzyka.
 
 Zbiory:
 
-* $S = \{1, 2, ..., 100\}$ -- scenariusze
+* $S = \{1, 2, ..., 5000\}$ -- scenariusze
+* $V = \{Z, R\}$ -- kryteria do optymalizacji (zyski i ryzyko)
 
 Parametry:
 
 * usunięto: $\mathbb{E}(R_p) \quad p \in P$
 * $R_{ps} \quad p \in P, s \in S$ -- jednostkowy dochód za produkt $p$ dla
   scenariusza $s$ [zł/szt]
-* $\rho$ -- istotność drugiego kryterium (sumy) w metodzie punktu referencyjnego
+* $\epsilon$ -- waga drugiego kryterium (sumy) w metodzie punktu odniesienia
   [brak jednostki]
-* $a_{r}$ -- wartość aspiracji dla ryzyka w metodzie punktu referencyjnego [zł]
-* $a_{z}$ -- wartość aspiracji dla średnich zysków w metodzie punktu
-  referencyjnego [zł]
-* $\lambda_{r}$ -- istotność ryzyka w metodzie punktu referencyjnego [brak
-  jednostki]
-* $\lambda_{z}$ -- istotność średnich zysków w metodzie punktu referencyjnego
+* $\beta$ -- waga dla wartości przekraczających aspiracje w metodzie punktu
+  odniesienia [brak jednostki]
+* $a_v \quad v \in V$ -- wartość aspiracji kryterium $v$ w metodzie punktu
+  odniesienia [zł]
+* $\lambda_v \quad v \in V$ -- waga kryterium $v$ w metodzie punktu odniesienia
   [brak jednostki]
 
 Zmienne:
@@ -250,8 +250,8 @@ Zmienne:
 * $r^{śr}$ -- wartość odchylenia przeciętnego zysków (miara ryzyka) [zł]
 * $z_s \quad s \in S$ -- łączny zysk dla scenariusza $s$ [zł]
 * $z^{śr}$ -- wartość oczekiwana łącznego zysku [zł]
-* $f$ -- minimum z wartości odchyleń: profitu i ryzyka od aspiracji w
-  metodzie punktu referencyjnego
+* $f_v \quad v \in V$ -- wartości do maksymalizacji w metodzie punktu odniesienia
+* $f^{min}$ -- minimum z wartości do maksymalizacji w metodzie punktu odniesienia
 
 Ograniczenia:
 
@@ -271,19 +271,23 @@ Ograniczenia:
   jest wartość konkretnej próbki
 * $z^{śr} = \sum\limits_{s \in S} z_s \cdot \frac{1}{|S|}$ -- obliczanie
   średniego łącznego zysku względem wszystkich scenariuszy
-* $f \le \lambda_z (z^{śr} - a_z)$ -- wartość minimalna odchylenia w metodzie
-  punktu referencyjnego jest mniejsza lub równa niż odchylenie średniego profitu
-  od aspiracji
-* $f \le \lambda_r (a_r - r^{śr})$ -- wartość minimalna odchylenia w metodzie
-  punktu referencyjnego jest mniejsza lub równa niż odchylenie miary
-  przeciętnego odchylenia od aspiracji; wartości w nawiasie są zamienione
-  miejscami, bo przeciętne odchylenie jest minimalizowane
+* ograniczenia z metody punktu odniesienia:
+  * $f_Z \le \lambda_Z (z^{śr} - a_Z)$ -- obliczanie $f_Z$ dla zysku poniżej
+    aspiracji
+  * $f_Z \le \beta \lambda_Z (z^{śr} - a_Z)$ -- obliczanie $f_Z$ dla zysku powyżej
+    aspiracji
+  * $f_R \le -\lambda_R (r^{śr} - a_R)$ -- obliczanie $f_R$ dla zysku poniżej
+    aspiracji (znak minus, ponieważ minimalizujemy ryzyko)
+  * $f_R \le -\beta \lambda_R (r^{śr} - a_R)$ -- obliczanie $f_R$ dla zysku
+    powyżej aspiracji (znak minus, ponieważ minimalizujemy ryzyko)
+  * $f^{min} \le f_v \quad \forall v \in V$ -- minimalna z wartości do
+    maksymalizacji mniejsza od każdej z tych wartości
 
 Cel:
 
-* $lexmax \ (f, \lambda_z (z^{śr} - a_z) + \lambda_r (a_r - r^{śr}))$ -- funkcja celu dla metody punktu referencyjnego: maksymalizacja w pierwszej kolejności minimum z odchyleń od aspiracji, a w drugiej kolejności sumy wszystkich odchyleń. Funkcja $lexmax$ jest realizowana metodą ,,inżynierską'' w następujący sposób:
+* $lexmax \ (f^{min}, \epsilon \sum\limits_{v \in V} f_v)$ -- funkcja celu dla metody punktu odniesienia: maksymalizacja w pierwszej kolejności minimum z wartości, a w drugiej kolejności sumy wszystkich wartości. Funkcja $lexmax$ jest realizowana metodą ,,inżynierską'' w następujący sposób:
 
-  $$\max \ f + \rho(\lambda_z (z^{śr} - a_z) + \lambda_r (a_r - r^{śr}))$$
+  $$\max \ f^{min} + \epsilon \sum\limits_{v \in V} f_v$$
 
 ### Generacja scenariuszy
 
@@ -304,62 +308,98 @@ pliku `.csv` generowanego z _MatLaba_ tworzy plik `.dat`.
 Powyższy model został zaimplementowany w języku AMPL i uruchomiony przy użyciu
 solwera CPLEX. Implementacja znajduje się w plikach: `src/z2.{dat,mod,run}`.
 Dodatkowo pliki `src/z2-a.run` i `src/z2-c.run` uruchamiają model dla kilku
-wartości aspiracji $a_r$ na potrzeby podpunktów _a_ i _c_. Z racji na dużą liczbę zmiennych całkowitoliczbowych (szczególnie produkcja, sprzedaż i stany magazynów), rozwiązanie dla niektórych parametrów odbywa się bardzo długo. Z tego powodu ograniczyłem czas rozwiązywania do $180 s$ na jeden zestaw parametrów, co sprawia że wyliczenie wszystkich punktów zajmuje ok. $2 h$.
+wartości aspiracji $a_R$ na potrzeby podpunktów _a_ i _c_. Ze względu na dużą
+liczbę scenariuszy, generacja rozwiązań efektywnych może zająć trochę czasu. Na
+mojej maszynie jest to ok. 30-40 min.
 
-Nastawy parametrów metody punktu referencyjnego z wyjątkiem $a_r$ są dla każdego uruchomienia stałe i równe:
+Nastawy parametrów metody punktu odniesienia z wyjątkiem $a_R$ są dla każdego uruchomienia stałe i równe:
 
-* $\rho = 0.000001$ -- wyznaczony eksperymentalnie tak, by drugie kryterium nie
+* $\epsilon = 0.0001$ -- wyznaczony eksperymentalnie tak, by drugie kryterium nie
   zakłócało działania pierwszego
-* $\lambda_r = 1000$, $\lambda_z = 0.001$ -- większy poziom istotności dla miary
+* $\beta = 0.001$ -- w moim zastosowaniu nie ma dużo znaczenia, bo i tak zawsze
+  wartości aspiracji są nieosiągalne
+* $\lambda_R = 1000$, $\lambda_Z = 0.001$ -- większa waga dla miary
   ryzyka zapewnia, że ustawiona wartość aspiracji odchylenia przeciętnego będzie
   bardzo blisko faktycznej wartości odchylenia przeciętnego dla rozwiązania
-* $a_z = -500$ -- wartość poniżej najgorszej z możliwych (dla $r^{śr} = 0$:
-  $z^{śr} = -300$); dzięki temu model będzie w pierwszej kolejności próbował
-  zrealizować aspirację dla ryzyka
+* $a_Z = 100000$ -- nieosiągalna wartość zysków, dzięki czemu algorytm będzie
+  maksymalizował zyski dla ustalonego ryzyka
 
 #### Zbiór rozwiązań efektywnych
 
 W celu wyznaczenia zbioru rozwiązań efektywnych w przestrzeni ryzyko-zysk,
-uruchomiłem model dla różnych wartości aspiracji $a_r$. Wyniki dla $a_r \ge 680$
+uruchomiłem model dla różnych wartości aspiracji $a_R$. Wyniki dla $a_R \ge 765$
 zaczynają się powtarzać, co oznacza że w tym przypadku średni zysk osiągnął już
 swoją maksymalną wartość.
 
-| $a_r$ | $r^{śr}$ | $z^{śr}$  | | $a_r$ | $r^{śr}$ | $z^{śr}$  |
+| $a_R$ | $r^{śr}$ | $z^{śr}$  | | $a_R$ | $r^{śr}$ | $z^{śr}$  |
 |-------|----------|-----------|-|-------|----------|-----------|
-| 0     |  0.0     | -300.0    | | 640   | 639.811  | 13831.1   |
-| 20    | 19.9796  | 504.977   | | 660   | 659.653  | 14036.6   |
-| 40    | 39.9916  | 1164.14   | | 680   | 663.134  | 14071.2   |
-| 60    | 59.9849  | 1821.6    | | 700   | 663.134  | 14071.2   |
-| 80    | 79.9858  | 2479.87   | | 720   | 663.134  | 14071.2   |
-| 100   | 99.9915  | 3137.94   | | 740   | 663.134  | 14071.2   |
-| 120   | 119.973  | 3787.16   | | 760   | 663.134  | 14071.2   |
-| 140   | 139.993  | 4418.61   | | 780   | 663.134  | 14071.2   |
-| 160   | 159.98   | 5050.11   | | 800   | 663.134  | 14071.2   |
-| 180   | 179.979  | 5681.19   | | 820   | 663.134  | 14071.2   |
-| ...   | ...      | ...       | | 840   | 663.134  | 14071.2   |
+| 0     |   0.00   |  -300.0   | | 630   | 629.33   | 12990.7   |
+| 15    |  15.00   |  229.82   | | 645   | 644.71   | 13144.7   |
+| 30    |  30.02   |  691.63   | | 660   | 659.80   | 13289.0   |
+| 45    |  44.92   | 1109.61   | | 675   | 675.04   | 13432.1   |
+| 60    |  60.05   | 1533.73   | | 690   | 689.56   | 13559.5   |
+| 75    |  75.02   | 1953.56   | | 705   | 704.56   | 13686.8   |
+| 90    |  89.96   | 2373.05   | | 720   | 719.76   | 13806.8   |
+| 105   | 104.93   | 2792.86   | | 735   | 735.06   | 13933.0   |
+| 120   | 119.76   | 3209.00   | | 750   | 749.36   | 14043.3   |
+| 135   | 134.95   | 3634.97   | | 765   | 752.70   | 14068.8   |
+| ...   | 149.96   | 4054.83   | | 780   | 752.70   | 14068.8   |
 
-<!-- | 200   | 199.991  | 6312.74   |
-| 220   | 219.99   | 6944.51   |
-| 240   | 239.977  | 7529.48   |
-| 260   | 259.946  | 7985.78   |
-| 280   | 279.985  | 8403.45   |
-| 300   | 299.981  | 8786.89   |
-| 320   | 319.956  | 9154.19   |
-| 340   | 339.985  | 9500.3    |
-| 360   | 359.987  | 9839.49   |
-| 380   | 379.928  | 10173.9   |
-| 400   | 399.985  | 10505.6   |
-| 420   | 419.956  | 10836.6   |
-| 440   | 439.958  | 11166.2   |
-| 460   | 459.984  | 11491.1   |
-| 480   | 479.982  | 11818.9   |
-| 500   | 499.956  | 12135.5   |
-| 520   | 519.955  | 12431.6   |
-| 540   | 539.963  | 12703.2   |
-| 560   | 559.937  | 12941.4   |
-| 580   | 579.885  | 13166.0   |
-| 600   | 599.834  | 13390.6   |
-| 620   | 619.674  | 13613.4   | -->
+<!--
+| 0     |   0.00   |  -300.0   |
+| 15    |  15.00   |  229.82   |
+| 30    |  30.02   |  691.63   |
+| 45    |  44.92   | 1109.61   |
+| 60    |  60.05   | 1533.73   |
+| 75    |  75.02   | 1953.56   |
+| 90    |  89.96   | 2373.05   |
+| 105   | 104.93   | 2792.86   |
+| 120   | 119.76   | 3209.00   |
+| 135   | 134.95   | 3634.97   |
+| ...   | 149.96   | 4054.83   |
+        | 165.00   | 4471.02   |
+        | 179.87   | 4878.72   |
+        | 194.90   | 5288.76   |
+        | 209.98   | 5698.28   |
+        | 224.68   | 6097.11   |
+        | 239.94   | 6511.27   |
+        | 255.04   | 6900.18   |
+        | 269.62   | 7233.75   |
+        | 284.87   | 7552.70   |
+        | 299.93   | 7847.14   |
+        | 314.86   | 8126.48   |
+        | 329.87   | 8398.99   |
+        | 344.86   | 8664.67   |
+        | 359.75   | 8921.86   |
+        | 374.97   | 9179.05   |
+        | 390.05   | 9428.23   |
+        | 404.82   | 9668.92   |
+        | 419.70   | 9909.13   |
+        | 434.84   | 10151.0   |
+        | 449.70   | 10385.6   |
+        | 464.64   | 10618.9   |
+        | 479.72   | 10852.3   |
+        | 494.92   | 11086.4   |
+        | 509.65   | 11311.8   |
+        | 524.43   | 11537.1   |
+        | 539.81   | 11770.5   |
+        | 554.80   | 11996.6   |
+        | 569.89   | 12223.1   |
+        | 584.72   | 12441.8   |
+        | 600.00   | 12651.2   |
+        | 614.66   | 12829.4   |
+| 630   | 629.33   | 12990.7   |
+| 645   | 644.71   | 13144.7   |
+| 660   | 659.80   | 13289.0   |
+| 675   | 675.04   | 13432.1   |
+| 690   | 689.56   | 13559.5   |
+| 705   | 704.56   | 13686.8   |
+| 720   | 719.76   | 13806.8   |
+| 735   | 735.06   | 13933.0   |
+| 750   | 749.36   | 14043.3   |
+| 765   | 752.70   | 14068.8   |
+| 780   | 752.70   | 14068.8   |
+-->
 
 Następnie otrzymane wyniki naniosłem na wykres. Na wykresie odwróciłem oś OX,
 żeby kierunek optymalizacji był skierowany intuicyjnie, w stronę pierwszej
@@ -373,13 +413,13 @@ sugeruje, że zadanie się udało.
 #### Rozwiązanie maksymalnego zysku
 
 znajduje się na wykresie na lewym krańcu zbioru. Posiada ono wartość średniego
-zysku $z^{śr} = 14071.2$ zbliżoną do wyniku z pierwszego zadania, co sugeruje
-poprawność wykonania obu zadań. Wtedy ryzyko wynosi ok. $r^{śr} = 663.1$.
+zysku $z^{śr} = 14068.8$ zł zbliżoną do wyniku z pierwszego zadania, co sugeruje
+poprawność wykonania obu zadań. Wtedy ryzyko wynosi ok. $r^{śr} = 752.70$ zł.
 
 #### Rozwiązanie minimalnego ryzyka
 
 znajduje się na wykresie na prawym krańcu zbioru. Posiada ono ujemną wartość
-średniego zysku $z^{śr} = -300$ przy zerowym ryzyku. Oznacza to, że dla każdego
+średniego zysku $z^{śr} = -300$ zł przy zerowym ryzyku. Oznacza to, że dla każdego
 ze scenariuszy zysk wynosi $-300$ zł. Takie rozwiązane, o ile efektywne w
 zadanym problemie wielokryterialnym, jest oczywiście całkowicie niedopuszczalne
 dla każdego rozsądnego decydenta i zdominowane w sensie FSD przez wiele innych
@@ -396,19 +436,19 @@ Poniżej fragment tabeli posortowanych niemalejąco ocen dla wybranych rozwiąza
 
 | $R1$    | $R2$    | $R3$    |
 |---------|---------|---------|
-| 2843.63 | 9145.04 | 11899.7 |
-| 2853.51 | 9345.1  | 12086.3 |
-| 2864.79 | 9397.9  | 12185.0 |
-| 2871.54 | 9518.35 | 12302.0 |
-| 2897.25 | 9528.94 | 12574.2 |
-| 2909.82 | 9539.58 | 12595.8 |
+| 2246.26 | 7904.41 | 10159.3 |
+| 2247.94 | 7928.13 | 10203.0 |
+| 2266.48 | 8058.30 | 10280.3 |
+| 2269.86 | 8061.10 | 10313.1 |
+| 2289.78 | 8079.48 | 10375.5 |
+| 2298.24 | 8092.72 | 10441.8 |
 | ...     | ...     | ...     |
-| 3369.17 | 11263.5 | 15460.8 |
-| 3379.42 | 11307.9 | 15500.0 |
-| 3381.01 | 11321.9 | 15553.1 |
-| 3393.06 | 11358.4 | 15566.7 |
-| 3416.98 | 11445.4 | 15717.3 |
-| 3429.93 | 11710.9 | 16139.1 |
+| 3052.70 | 11078.6 | 14975.6 |
+| 3058.01 | 11137.9 | 15000.1 |
+| 3070.03 | 11210.5 | 15167.0 |
+| 3070.12 | 11240.9 | 15279.7 |
+| 3077.59 | 11479.9 | 15386.3 |
+| 3097.90 | 11484.4 | 15412.4 |
 
 Po przeanalizowaniu całości tabeli widać, że $R1 \prec_a R2 \prec_a R3$, bo $y_{R1} \le y_{R2} \le y_{R3}$.
 Jako że zadanie jest sprowadzalne do problemu wyboru jednakowo prawdopodobnych
