@@ -219,8 +219,8 @@ Rdzeń modelu rozwiązania będzie identyczny jak w przypadku zadania 1. Zmiany 
 
 * obliczania wartości oczekiwanej dochodów,
 * dodania elementów związanych z ryzykiem,
-* zmiany funkcji celu na taką zgodną z metodą punktu odniesienia dla
-  kryteriów: zysku i ryzyka.
+* zmiany funkcji celu na zgodną z metodą punktu odniesienia dla kryteriów: zysku
+  i ryzyka.
 
 Zbiory:
 
@@ -429,7 +429,7 @@ problematycznych przypadków.
 #### Analiza dominacji FSD
 
 została przeprowadzona dla 3 rozwiązań. Ich punkty aspiracji ryzyka to: $100$,
-$400$ i $740$. Rozwiązania oznaczę odpowiednio $R1$, $R2$ i $R3$. Dzięki
+$400$ i $600$. Rozwiązania oznaczę odpowiednio $R1$, $R2$ i $R3$. Dzięki
 analizie FSD można sprawdzić, czy któreś z nich jest zdominowane przez inne.
 
 Poniżej fragment tabeli posortowanych niemalejąco ocen dla wybranych rozwiązań.
